@@ -1,0 +1,52 @@
+
+- ale
+- auto-dark-mode # vim plugin
+- rust.vim # vim plugin
+  - syntastic # vim plugin 
+  - Tagbar # vim plugin
+    - Universal CTags # software 
+- NERDtree
+- vim-airline
+  - vim-airline-themes
+- vim-toml # vim plugin, may not be needed
+
+
+
+auto-dark-mode
+  https://github.com/L-TChen/auto-dark-mode
+
+rust.vim
+  https://github.com/rust-lang/rust.vim
+  git clone https://github.com/rust-lang/rust.vim ~/.vim/pack/plugins/start/rust.vim
+
+Syntastic 
+  https://github.com/vim-syntastic/syntastic
+  git clone https://github.com/vim-syntastic/syntastic ~/.vim/pack/plugins/start/syntastic
+
+Tagbar
+
+Universal Ctags
+  https://ctags.io
+  Installed via homebrew
+
+ale
+  https://github.com/dense-analysis/ale
+  mkdir -p ~/.vim/pack/git-plugins/start
+  git clone --depth 1 https://github.com/dense-analysis/ale.git ~/.vim/pack/git-plugins/start/ale
+
+vim-toml
+  https://github.com/cespare/vim-toml
+
+nerdtree
+  https://github.com/preservim/nerdtree
+
+vim-airline
+  git clone https://github.com/vim-airline/vim-airline ~/.vim/pack/git-plugins/start/vim-airline
+  :helptags ~/.vim/pack/git-plugins/start/vim-airline/doc
+  git clone https://github.com/vim-airline/vim-airline-themes ~/.vim/pack/git-plugins/start/vim-airline-themes
+  :helptags ~/.vim/pack/git-plugins/start/vim-airline-themes/doc
+
+
+vim-toml
+  https://github.com/cespare/vim-toml
+

@@ -1,0 +1,175 @@
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
+
+# Path to your oh-my-zsh installation.
+export ZSH=/Users/jasonheath/.oh-my-zsh
+
+# Set name of the theme to load. Optionally, if you set this to "random"
+# it'll load a random theme each time that oh-my-zsh is loaded.
+# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+ZSH_THEME="rkj-repos" # set by `omz`
+#ZSH_THEME="rkj-repos" # set by `omz`
+#ZSH_THEME="fletcherm"
+#ZSH_THEME="random"
+
+# Set list of themes to load
+# Setting this variable when ZSH_THEME=random
+# cause zsh load theme from this variable instead of
+# looking in ~/.oh-my-zsh/themes/
+# An empty array have no effect
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_ZSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+HIST_STAMPS="yyyy-mm-dd"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+#
+
+
+plugins=(
+  aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
+  ag # This plugin provides completion support for ag (the silver searcher)
+  brew # The plugin adds several aliases for common brew commands
+  bundler # This plugin adds completion for basic bundler commands, as well as aliases and helper functions for an easier experience with bundler.
+  colored-man-pages # This plugin adds colors to man pages.
+  docker # This plugin adds auto-completion and aliases for docker.
+  docker-compose # This plugin provides completion for docker-compose as well as some aliases for frequent docker-compose commands.
+  # docker-machine # Review this down the road
+  gem # This plugin adds completions and aliases for Gem.
+  git # The git plugin provides many aliases and a few useful functions.
+  git-prompt # A zsh prompt that displays information about the current git repository.
+  golang # This plugin adds completion for the Go Programming Language, as well as some aliases for common Golang commands.
+  iterm2 # This plugin adds a few functions that are useful when using iTerm2.
+  # pj # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/pj
+  rails # This plugin adds completion for Ruby On Rails Framework and Rake commands, as well as some aliases for logs and environment variables.
+  rake # This plugin adds support for rake, the Ruby build tool or Ruby Make.
+  rbenv # The primary job of this plugin is to provide rbenv_prompt_info which can be added to your theme to include Ruby version and gemset information into your prompt. 
+        # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
+  redis-cli # This plugin adds redis-cli completion, based off of Homebrew completion.
+  rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
+  vi-mode # his plugin increase vi-like zsh functionality.
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='mvim'
+fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-zsh libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-zsh
+# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+alias zsh-edit-zshrc='mvim ~/.zshrc'
+alias vim-edit-vimrc='mvim ~/.vim/vimrc'
+alias brew-update-homebrew='brew update --verbose'
+alias brew-package-upgrade-check='brew update --verbose'
+alias brew-package-upgrade-execute='brew update --verbose'
+
+alias iterm-into-the-light="it2setcolor preset 'Solarized Light'"
+alias iterm-darkness-falls="it2setcolor preset 'Solarized Dark'"
+
+alias rm='rm -i'
+alias cp='cp -i'
+
+alias  l1='ls -1FG'
+alias  ll='ls -lFGlh'
+alias  la='ls -AFG'
+alias lal='ls -AFGlh'
+alias la1='ls -1AFGh'
+
+alias chrome='open -a /Applications/Google\ Chrome.app'
+alias firefox='open -a /Applications/Firefox.app'
+alias markoff='open -a /Applications/Markoff.app'
+alias safari='open -a /Applications/Safari.app'
+
+
+
+# JAH stuff below, Oh My Zsh stuff above
+
+# `.zshrc' is sourced in interactive shells. It should contain commands to set
+# up aliases, functions, options, key bindings, etc.
+
+
+export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
+export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
+export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
+
+export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
+
+export GOPATH='/Users/jasonheath/Development/go'
+
+#export $COLORTERM=truecolor
+
+# bindkey -v # Vi Lyfe <=- I don't think I need this with the use of the vim plugin above
+
+
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
+#precmd() {
+#  #FLIP=$(($(($RANDOM%10))%2))
+#  #if [ $FLIP -eq 1 ]
+#  APPLE_INTERFACESTYLE=`defaults read -g AppleInterfaceStyle`
+#  if [ $APPLE_INTERFACESTYLE = 'Dark' ]
+#  then
+#      it2setcolor preset 'Solarized Dark'
+#  else
+#      it2setcolor preset 'Solarized Light'
+#  fi
+#}

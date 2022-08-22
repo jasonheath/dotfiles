@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =5
+let g:netrw_dirhist_5='/Users/jasonheath/Development/rust/jah-playground/address.rs'
+let g:netrw_dirhist_4='/Users/jasonheath/.vim/pack'
+let g:netrw_dirhist_3='/Users/jasonheath/Development/rust/jah-playground'
+let g:netrw_dirhist_2='/Users/jasonheath/.vim/pack'
+let g:netrw_dirhist_1='/Users/jasonheath/Development/rust/hello_cargo/src'
+let g:netrw_dirhist_0='/Users/jasonheath/Development/rust/hello_cargo'
+let g:netrw_dirhist_9='/Users/jasonheath/.vim/ftplugin'
+let g:netrw_dirhist_8='/Users/jasonheath/.vim'
+let g:netrw_dirhist_7='/Applications/MacVim.app/Contents/Resources/vim/runtime/doc'
+let g:netrw_dirhist_6='/Users/jasonheath/.vim'

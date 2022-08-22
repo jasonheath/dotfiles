@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/jasonheath/.oh-my-zsh
+export ZSH=/Users/{{ .chezmoi.username }}/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -83,7 +83,7 @@ plugins=(
   rake # This plugin adds support for rake, the Ruby build tool or Ruby Make.
   rbenv # The primary job of this plugin is to provide rbenv_prompt_info which can be added to your theme to include Ruby version and gemset information into your prompt. 
         # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
-  redis-cli # This plugin adds redis-cli completion, based off of Homebrew completion.
+  redis-cli # This plugin adds redis-cli completion, based off of {{ .chezmoi.version.builtBy }} completion.
   rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
   vi-mode # his plugin increase vi-like zsh functionality.
 )
@@ -101,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='mvim'
+  export EDITOR='vim'
 fi
 
 # Compilation flags

@@ -1,0 +1,6 @@
+
+export PATH=/Applications/MacVim.app/Contents/bin:$PATH
+
+
+eval "$(rbenv init -)"
+. "$HOME/.cargo/env"

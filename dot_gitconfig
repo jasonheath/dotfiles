@@ -1,0 +1,29 @@
+[init]
+	defaultBranch = main
+[core]
+	editor = vim --nofork
+	pager = 
+[user]
+	name = Jason Heath
+	email = jh@jasonheath.com
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[pager]
+	diff = less -FX
+[format]
+	pretty = reference
+[diff]
+	tool = vimdiff
+	prompt = no
+[difftool]
+	prompt = false
+[log]
+	abbrevCommit = true
+[alias]
+  rlog = log --reverse --max-count=4
+	ca = commit --all
+	dt = difftool
+	cam = commit --all --message

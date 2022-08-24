@@ -1,5 +1,5 @@
 [init]
-	defaultBranch = main
+	defaultBranch = ""
 [core]
 	editor = vim --nofork
 	pager = 

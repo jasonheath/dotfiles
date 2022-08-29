@@ -150,13 +150,18 @@ alias safari='open -a /Applications/Safari.app'
 export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
 export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
 export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
+#export GOPATH='/Users/jasonheath/Development/go'
 
 export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
 
-export GOPATH='/Users/jasonheath/Development/go'
 
 #export $COLORTERM=truecolor
 
 # bindkey -v # Vi Lyfe <=- I don't think I need this with the use of the vim plugin above
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
+{{- if eq .chezmoi.hostname "C02G2566MD6R" }}
+export HAB_ORIGIN=jah_tryhabitat
+{{- end }}

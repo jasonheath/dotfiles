@@ -2,7 +2,15 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
+{{ if eq .chezmoi.os "darwin" }}
 export ZSH=/Users/{{ .chezmoi.username }}/.oh-my-zsh
+{{ else if eq .chezmoi.os "linux" }}
+export ZSH=/home/{{ .chezmoi.username }}/.oh-my-zsh
+{{ else }}
+echo "OH NOES!  You've fallen through have a bad ZSH environment variable setting!"
+export ZSH="/This/Will/Hurt/Or/At/Least/It/Did/Last/Time"
+echo "$ZSH"
+{{ end }}
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -147,19 +155,32 @@ alias safari='open -a /Applications/Safari.app'
 # up aliases, functions, options, key bindings, etc.
 
 
+
+
+{{ if eq .chezmoi.os "darwin" }}
+
 export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
-export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
+#export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
 export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
 #export GOPATH='/Users/jasonheath/Development/go'
 
 export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
 
+{{ else if eq .chezmoi.os "linux" }}
+
+export PATH="$HOME/bin:$PATH"
+
+{{ else }}
+echo "you haven't managed your path in this version"
+{{ end }}
+
 
 #export $COLORTERM=truecolor
 
-# bindkey -v # Vi Lyfe <=- I don't think I need this with the use of the vim plugin above
 
+{{ if eq .chezmoi.os "darwin" }}
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+{{ end }}
 
 BAT_THEME="Solarized (light)"
 

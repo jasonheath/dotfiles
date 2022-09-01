@@ -1,6 +1,12 @@
+# ~/.bash_profile is run by 
+# (1) "interactive login shells"
+# (2)" non-interactive shells with the --login option"
+
+# so do any configuration particular to "login shells"
 {{- if eq .chezmoi.os "darwin" }}
 export PATH=/Applications/MacVim.app/Contents/bin:$PATH
 {{- end }}
-eval "$(rbenv init -)"
-. "$HOME/.cargo/env"
+
+# and then pull in the rest of the configuration you want for bash
+source $HOME/.bashrc
 

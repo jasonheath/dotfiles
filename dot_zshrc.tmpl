@@ -2,21 +2,21 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-{{ if eq .chezmoi.os "darwin" }}
-export ZSH=/Users/{{ .chezmoi.username }}/.oh-my-zsh
-{{ else if eq .chezmoi.os "linux" }}
-export ZSH=/home/{{ .chezmoi.username }}/.oh-my-zsh
-{{ else }}
+{{- if eq .chezmoi.os "darwin" }}
+export ZSH=/Users/{{- .chezmoi.username }}/.oh-my-zsh
+{{- else if eq .chezmoi.os "linux" }}
+export ZSH=/home/{{- .chezmoi.username }}/.oh-my-zsh
+{{- else }}
 echo "OH NOES!  You've fallen through have a bad ZSH environment variable setting!"
 export ZSH="/This/Will/Hurt/Or/At/Least/It/Did/Last/Time"
 echo "$ZSH"
-{{ end }}
+{{- end }}
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="rkj-repos" # set by `omz`
-#ZSH_THEME="rkj-repos" # set by `omz`
+#ZSH_THEME="rkj-repos" # this is the one I've been digging
 #ZSH_THEME="fletcherm"
 #ZSH_THEME="random"
 
@@ -44,7 +44,7 @@ ZSH_THEME="rkj-repos" # set by `omz`
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -93,8 +93,9 @@ plugins=(
         # can be added to your theme to include Ruby version and gemset information
         # into your prompt. 
         # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
-  redis-cli # This plugin adds redis-cli completion, based off of {{ .chezmoi.version.builtBy }} completion.
+  redis-cli # This plugin adds redis-cli completion, based off of {{- .chezmoi.version.builtBy }} completion.
   rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
+  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
   vi-mode # his plugin increase vi-like zsh functionality.
 )
 
@@ -157,7 +158,7 @@ alias safari='open -a /Applications/Safari.app'
 
 
 
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 
 export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
 #export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
@@ -166,30 +167,25 @@ export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
 
 export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
 
-{{ else if eq .chezmoi.os "linux" }}
+{{- else if eq .chezmoi.os "linux" }}
 
 export PATH="$HOME/bin:$PATH"
 
-{{ else }}
+{{- else }}
 echo "you haven't managed your path in this version"
-{{ end }}
+{{- end }}
 
 
 #export $COLORTERM=truecolor
 
 
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-{{ end }}
-
-BAT_THEME="Solarized (light)"
+{{- end }}
 
 {{- if eq .chezmoi.hostname "C02G2566MD6R" }}
-
 export HAB_ORIGIN=jah_tryhabitat
-
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
-
 {{- end }}
 

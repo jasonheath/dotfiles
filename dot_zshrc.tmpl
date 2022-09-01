@@ -8,7 +8,7 @@ export ZSH=/Users/{{ .chezmoi.username }}/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="rkj-repos" # set by `omz`
-#ZSH_THEME="rkj-repos" # set by `omz`
+#ZSH_THEME="rkj-repos" # this is the one I've been digging
 #ZSH_THEME="fletcherm"
 #ZSH_THEME="random"
 
@@ -36,7 +36,7 @@ ZSH_THEME="rkj-repos" # set by `omz`
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
@@ -87,6 +87,7 @@ plugins=(
         # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
   redis-cli # This plugin adds redis-cli completion, based off of {{ .chezmoi.version.builtBy }} completion.
   rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
+  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
   vi-mode # his plugin increase vi-like zsh functionality.
 )
 
@@ -160,8 +161,6 @@ export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
 # bindkey -v # Vi Lyfe <=- I don't think I need this with the use of the vim plugin above
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-BAT_THEME="Solarized (light)"
 
 {{- if eq .chezmoi.hostname "C02G2566MD6R" }}
 

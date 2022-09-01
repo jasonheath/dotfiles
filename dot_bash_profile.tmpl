@@ -1,6 +1,6 @@
-
+{{- if eq .chezmoi.os "darwin" }}
 export PATH=/Applications/MacVim.app/Contents/bin:$PATH
-
-
+{{- end }}
 eval "$(rbenv init -)"
 . "$HOME/.cargo/env"
+

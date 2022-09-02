@@ -15,8 +15,7 @@ echo "$ZSH"
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="rkj-repos" # set by `omz`
-#ZSH_THEME="rkj-repos" # this is the one I've been digging
+ZSH_THEME="rkj-repos" # this is the one I've been digging
 #ZSH_THEME="fletcherm"
 #ZSH_THEME="random"
 
@@ -69,9 +68,6 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-#
-
-
 plugins=(
   aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
   ag # This plugin provides completion support for ag (the silver searcher)
@@ -101,9 +97,8 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
+# `.zshrc' is sourced in interactive shells. It should contain commands to set
+# up aliases, functions, options, key bindings, etc.
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -125,22 +120,17 @@ fi
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
-alias zsh-edit-zshrc='mvim ~/.zshrc'
-alias vim-edit-vimrc='mvim ~/.vim/vimrc'
-alias brew-update-homebrew='brew update --verbose'
-alias brew-package-upgrade-check='brew update --verbose'
-alias brew-package-upgrade-execute='brew update --verbose'
-
-alias iterm-into-the-light="it2setcolor preset 'Solarized Light'"
-alias iterm-darkness-falls="it2setcolor preset 'Solarized Dark'"
+alias zsh-edit-zshrc='chezmoi edit ~/.zshrc'
+alias vim-edit-vimrc='chezmoi edit ~/.vim/vimrc'
 
 alias rm='rm -i'
 alias cp='cp -i'
 
-alias  l1='ls -1FG'
-alias  ll='ls -lFGlh'
-alias  la='ls -AFG'
-alias lal='ls -AFGlh'
+alias   l='ls  -FG'
+alias  l1='ls  -1FG'
+alias  ll='ls  -lFGhl'
+alias  la='ls  -AFG'
+alias lal='ls  -AFGhl'
 alias la1='ls -1AFGh'
 
 alias chrome='open -a /Applications/Google\ Chrome.app'
@@ -149,38 +139,27 @@ alias markoff='open -a /Applications/Markoff.app'
 alias safari='open -a /Applications/Safari.app'
 
 
-
-# JAH stuff below, Oh My Zsh stuff above
-
-# `.zshrc' is sourced in interactive shells. It should contain commands to set
-# up aliases, functions, options, key bindings, etc.
-
-
-
+# export MANPATH="/usr/local/man:$MANPATH"
 
 {{- if eq .chezmoi.os "darwin" }}
-
 export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
 #export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
 export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
 #export GOPATH='/Users/jasonheath/Development/go'
 
 export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
-
 {{- else if eq .chezmoi.os "linux" }}
-
 export PATH="$HOME/bin:$PATH"
-
 {{- else }}
 echo "you haven't managed your path in this version"
 {{- end }}
 
-
 #export $COLORTERM=truecolor
-
 
 {{- if eq .chezmoi.os "darwin" }}
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#alias iterm-into-the-light="it2setcolor preset 'Solarized Light'"
+#alias iterm-darkness-falls="it2setcolor preset 'Solarized Dark'"
 {{- end }}
 
 {{- if eq .chezmoi.hostname "C02G2566MD6R" }}
@@ -189,3 +168,5 @@ export HAB_ORIGIN=jah_tryhabitat
 # the arguments before running 'hab studio enter'.
 {{- end }}
 
+export BASH_ENV="$HOME/.bashrc" 
+# ^^ this was a painful lesson, leave it if you've forgotten why its here

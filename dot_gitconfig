@@ -3,6 +3,7 @@
 [core]
 	editor = vim --nofork
 	pager = 
+	excludesfile = /Users/jaheath/.gitignore_global
 [user]
 	name = Jason Heath
 	email = jh@jasonheath.com
@@ -27,3 +28,9 @@
 	ca = commit --all
 	dt = difftool
 	cam = commit --all --message
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

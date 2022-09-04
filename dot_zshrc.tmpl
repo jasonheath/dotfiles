@@ -1,16 +1,11 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# '.zshrc' is sourced in interactive shells. It should contain commands to set
+# up aliases, functions, options, key bindings, etc.
+#
+# '.zshrc' is 2/4 files that are executed
+
 
 # Path to your oh-my-zsh installation.
-{{- if eq .chezmoi.os "darwin" }}
-export ZSH=/Users/{{- .chezmoi.username }}/.oh-my-zsh
-{{- else if eq .chezmoi.os "linux" }}
-export ZSH=/home/{{- .chezmoi.username }}/.oh-my-zsh
-{{- else }}
-echo "OH NOES!  You've fallen through have a bad ZSH environment variable setting!"
-export ZSH="/This/Will/Hurt/Or/At/Least/It/Did/Last/Time"
-echo "$ZSH"
-{{- end }}
+export ZSH={{- .chezmoi.homeDir }}/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -19,109 +14,55 @@ ZSH_THEME="rkj-repos" # this is the one I've been digging
 #ZSH_THEME="fletcherm"
 #ZSH_THEME="random"
 
-# Set list of themes to load
-# Setting this variable when ZSH_THEME=random
-# cause zsh load theme from this variable instead of
-# looking in ~/.oh-my-zsh/themes/
-# An empty array have no effect
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 HIST_STAMPS="yyyy-mm-dd"
 
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
-  ag # This plugin provides completion support for ag (the silver searcher)
-  brew # The plugin adds several aliases for common brew commands
   bundler # This plugin adds completion for basic bundler commands, as well as aliases and helper functions for an easier experience with bundler.
   colored-man-pages # This plugin adds colors to man pages.
   docker # This plugin adds auto-completion and aliases for docker.
   docker-compose # This plugin provides completion for docker-compose as well as some aliases for frequent docker-compose commands.
-  # docker-machine # Review this down the road
-  gem # This plugin adds completions and aliases for Gem.
   git # The git plugin provides many aliases and a few useful functions.
-  git-prompt # A zsh prompt that displays information about the current git repository.
-  golang # This plugin adds completion for the Go Programming Language, as well as some aliases for common Golang commands.
-  iterm2 # This plugin adds a few functions that are useful when using iTerm2.
-  # pj # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/pj
-  rails # This plugin adds completion for Ruby On Rails Framework and Rake commands, as well as some aliases for logs and environment variables.
-  rake # This plugin adds support for rake, the Ruby build tool or Ruby Make.
-  rbenv # The primary job of this plugin is to provide rbenv_prompt_info which
-        # can be added to your theme to include Ruby version and gemset information
-        # into your prompt. 
-        # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
-  redis-cli # This plugin adds redis-cli completion, based off of {{- .chezmoi.version.builtBy }} completion.
   rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
   tmux # This plugin provides aliases for tmux, the terminal multiplexer.
   vi-mode # his plugin increase vi-like zsh functionality.
 )
+
+# PLUGINS OF INTEREST PAST AND FUTURE
+#  aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
+#  brew # The plugin adds several aliases for common brew commands
+#  docker-machine # Review this down the road
+#  gem # This plugin adds completions and aliases for Gem.
+#  git-prompt # A zsh prompt that displays information about the current git repository.
+#  golang # This plugin adds completion for the Go Programming Language, as well as some aliases for common Golang commands.
+#  iterm2 # This plugin adds a few functions that are useful when using iTerm2.
+#  pj # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/pj
+#  rails # This plugin adds completion for Ruby On Rails Framework and Rake commands, as well as some aliases for logs and environment variables.
+#  rake # This plugin adds support for rake, the Ruby build tool or Ruby Make.
+#  rbenv # The primary job of this plugin is to provide rbenv_prompt_info which
+#        # can be added to your theme to include Ruby version and gemset information
+#        # into your prompt. 
+#        # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
+#  redis-cli # This plugin adds redis-cli completion, based off of {{- .chezmoi.version.builtBy }} completion.
 
 source $ZSH/oh-my-zsh.sh
 
 # `.zshrc' is sourced in interactive shells. It should contain commands to set
 # up aliases, functions, options, key bindings, etc.
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='vim'
-fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-alias zsh-edit-zshrc='chezmoi edit ~/.zshrc'
-alias vim-edit-vimrc='chezmoi edit ~/.vim/vimrc'
 
 alias rm='rm -i'
 alias cp='cp -i'
@@ -139,34 +80,10 @@ alias markoff='open -a /Applications/Markoff.app'
 alias safari='open -a /Applications/Safari.app'
 
 
-# export MANPATH="/usr/local/man:$MANPATH"
 
 {{- if eq .chezmoi.os "darwin" }}
-export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
-#export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
-export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
-#export GOPATH='/Users/jasonheath/Development/go'
-
-export PATH="$HOME/bin:$MACVIM_PATH:$POSTGRES_PATH:$HOMBREW_PATH:$PATH"
-{{- else if eq .chezmoi.os "linux" }}
-export PATH="$HOME/bin:$PATH"
-{{- else }}
-echo "you haven't managed your path in this version"
-{{- end }}
-
-#export $COLORTERM=truecolor
-
-{{- if eq .chezmoi.os "darwin" }}
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 #alias iterm-into-the-light="it2setcolor preset 'Solarized Light'"
 #alias iterm-darkness-falls="it2setcolor preset 'Solarized Dark'"
 {{- end }}
 
-{{- if eq .chezmoi.hostname "C02G2566MD6R" }}
-export HAB_ORIGIN=jah_tryhabitat
-# To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
-# the arguments before running 'hab studio enter'.
-{{- end }}
-
-export BASH_ENV="$HOME/.bashrc" 
-# ^^ this was a painful lesson, leave it if you've forgotten why its here

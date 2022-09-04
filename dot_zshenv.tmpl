@@ -1,0 +1,47 @@
+# '.zshenv' is sourced on all invocations of the shell, unless the -f
+# option is set. It should contain commands to set the command search 
+# path, plus other important environment variables. '.zshenv' should not
+# contain commands that produce output or assume the shell is attached
+# to a tty.
+#
+# '.zshenv' is 1/4 files that are executed
+
+export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='vim'
+fi
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+{{- if eq .chezmoi.os "darwin" }}
+#export HOMBREW_PATH='/usr/local/bin:/usr/local/sbin'
+#export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
+#export MACVIM_PATH='/Applications/MacVim.app/Contents/bin'
+#export GOPATH='/Users/jasonheath/Development/go'
+
+#export PATH="$HOME/bin:$MACVIM_PATH:$HOMBREW_PATH:$PATH"
+{{- else if eq .chezmoi.os "linux" }}
+export PATH="$HOME/bin:$PATH"
+{{- end }}
+
+. "$HOME/.cargo/env"
+
+
+#export $COLORTERM=truecolor
+
+{{- if eq .chezmoi.hostname "C02G2566MD6R" }}
+export HAB_ORIGIN=jah_tryhabitat
+# To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
+# the arguments before running 'hab studio enter'.
+{{- end }}
+
+export BASH_ENV="$HOME/.bashrc" 
+

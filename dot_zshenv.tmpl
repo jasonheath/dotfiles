@@ -24,17 +24,14 @@ fi
 . "$HOME/.cargo/env"
 
 {{- if eq .chezmoi.os "darwin" }}
+#export PATH_GO='/Users/jasonheath/Development/go'
+export PATH_HOMEBREW="/usr/local/bin:/usr/local/sbin"
+export PATH_HOME_BIN="$HOME/bin"
+export PATH_MACVIM="/Applications/MacVim.app/Contents/bin"
+#export PATH_POSTGRES='/Applications/Postgres.app/Contents/Versions/latest/bin'
+export PATH_VSCODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
-
-#export POSTGRES_PATH='/Applications/Postgres.app/Contents/Versions/latest/bin'
-#export GOPATH='/Users/jasonheath/Development/go'
-
-# /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Users/jaheath/.cargo/bin
-export HOMBREW_PATH="/usr/local/bin:/usr/local/sbin"
-export MACVIM_PATH="/Applications/MacVim.app/Contents/bin"
-export HOME_BIN_PATH="$HOME/bin"
-
-export PATH="$HOME_BIN_PATH:$MACVIM_PATH:$HOMBREW_PATH:$PATH"
+export PATH="$PATH_HOME_BIN:$PATH_MACVIM:$PATH_VSCODE:$PATH_HOMEBREW:$PATH"
 
 {{- else if eq .chezmoi.os "linux" }}
 

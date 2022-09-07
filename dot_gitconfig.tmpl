@@ -2,11 +2,15 @@
 	defaultBranch = main
 [core]
 	editor = vim --nofork
-	pager = 
-	excludesfile = /Users/jaheath/.gitignore_global
 [user]
 	name = Jason Heath
+{{- if eq .chezmoi.username "jaheath" }} 
+	email = jason.heath@progress.com
+{{- else if eq .chezmoi.username "jah" }} 
+	email = jason.heath@progress.com
+{{- else }}
 	email = jh@jasonheath.com
+{{- end }}
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -30,7 +34,6 @@
 	cam = commit --all --message
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
 [mergetool "sourcetree"]
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true

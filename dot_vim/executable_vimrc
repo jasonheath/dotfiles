@@ -20,7 +20,8 @@ set tabstop=2
 set smartindent
 set visualbell
 
-set guifont=Monaco:h14
+"set guifont=Monaco:h14
+set guifont=AndaleMono:h18
 colorscheme solarized
 
 set encoding=utf8
@@ -88,27 +89,3 @@ silent! helptags ALL
 "  set guifont=Monaco:h14
 ":endif
 
-
-" Automatically switch light/dark background + theme
-"function! SetAppearance(...)
-"  try
-"    let s:mode = systemlist("")[0]
-"    let s:new_bg = ""
-"    let s:new_theme = ""
-"    if s:mode ==? "Dark"
-"      let s:new_bg = "dark"
-"      let s:new_theme = "base16-unikitty-dark"
-"    else
-"      let s:new_bg = "light"
-"      let s:new_theme = "base16-unikitty-light"
-"    endif
-"    if &background !=? s:new_bg
-"      let &background = s:new_bg
-"      execute 'colorscheme '.s:new_theme
-"    endif
-"  catch
-"    " Ignore errors
-"  endtry
-"endfunction
-"call SetAppearance()
-"call timer_start(2000, "SetAppearance", {"repeat": -1})

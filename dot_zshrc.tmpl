@@ -79,7 +79,11 @@ alias firefox='open -a /Applications/Firefox.app'
 alias markoff='open -a /Applications/Markoff.app'
 alias safari='open -a /Applications/Safari.app'
 
+# configure the environment for cargo/rust
+source "$HOME/.cargo/env"
 
+# configure the environment for rbenv's management of ruby
+eval "$(rbenv init - zsh)"
 
 {{- if eq .chezmoi.os "darwin" }}
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

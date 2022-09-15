@@ -21,8 +21,6 @@ fi
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-. "$HOME/.cargo/env"
-
 {{- if eq .chezmoi.os "darwin" }}
 #export PATH_GO='/Users/jasonheath/Development/go'
 export PATH_HOMEBREW="/usr/local/bin:/usr/local/sbin"
@@ -32,14 +30,9 @@ export PATH_MACVIM="/Applications/MacVim.app/Contents/bin"
 export PATH_VSCODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 export PATH="$PATH_HOME_BIN:$PATH_MACVIM:$PATH_VSCODE:$PATH_HOMEBREW:$PATH"
-
 {{- else if eq .chezmoi.os "linux" }}
-
 export PATH="$HOME/bin:$PATH"
-
 {{- end }}
-
-
 
 #export $COLORTERM=truecolor
 

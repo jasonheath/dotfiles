@@ -84,6 +84,8 @@ source "$HOME/.cargo/env"
 
 # configure the environment for rbenv's management of ruby
 eval "$(rbenv init - zsh)"
+RUBY_MANPATH="$(rbenv prefix)/share/man"
+export MANPATH="$RUBY_MANPATH:$MANPATH"
 
 {{- if eq .chezmoi.os "darwin" }}
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

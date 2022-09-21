@@ -2,6 +2,9 @@
 	defaultBranch = main
 [core]
 	editor = vim --nofork
+  pager = bat 
+[pager]
+  diff = bat
 [user]
 	name = Jason Heath
 {{- if eq .chezmoi.username "jaheath" }} 
@@ -16,8 +19,6 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-[pager]
-	diff = less -FX
 [format]
 	pretty = reference
 [diff]
@@ -28,12 +29,9 @@
 [log]
 	abbrevCommit = true
 [alias]
-  rlog = log --reverse --max-count=4
+  branches-merged = branch --list --remotes --merged
+  branches-not-merged = branch --list --remotes --no-merged
 	ca = commit --all
-	dt = difftool
 	cam = commit --all --message
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	dt = difftool
+  rlog = log --reverse --max-count=16

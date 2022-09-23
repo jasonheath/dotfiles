@@ -219,11 +219,14 @@ tags
 # https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 #-----------------------------------------------------------------------
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+#!.vscode/settings.json
+#!.vscode/tasks.json
+#!.vscode/launch.json
+#!.vscode/extensions.json
+#!.vscode/*.code-snippets
+# JAH: While I like these default no-ignores in theory in practice it
+# JAH: they are just causing me to see things that git now wants to
+# JAH: and that's often in code I don't control the repo/.gitignore.
 
 # Local History for Visual Studio Code
 .history/

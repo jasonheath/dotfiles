@@ -71,7 +71,19 @@ packloadall
 silent! helptags ALL
 
 
+let output =  system("defaults read -g AppleInterfaceStyle")
+if v:shell_error != 0
+    set background=light
+    colorscheme solarized
+else
+    set background=dark
+    colorscheme solarized
+endif
+
+
+
 " -=> Everything Below has been commented out <=- 
+"
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

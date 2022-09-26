@@ -1,37 +1,39 @@
 [init]
-	defaultBranch = main
+  defaultBranch = main
 [core]
-	editor = vim --nofork
+  editor = vim --nofork
   pager = bat 
 [pager]
   diff = bat
 [user]
-	name = Jason Heath
+  name = Jason Heath
 {{- if eq .chezmoi.username "jaheath" }} 
-	email = jason.heath@progress.com
+  email = jason.heath@progress.com
 {{- else if eq .chezmoi.username "jah" }} 
-	email = jason.heath@progress.com
+  email = jason.heath@progress.com
 {{- else }}
-	email = jh@jasonheath.com
+  email = jh@jasonheath.com
 {{- end }}
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
 [format]
-	pretty = reference
+  pretty = reference
 [diff]
-	tool = vimdiff
-	prompt = no
+  tool = vimdiff
+  prompt = no
 [difftool]
-	prompt = false
+  prompt = false
 [log]
-	abbrevCommit = true
+  abbrevCommit = true
 [alias]
   branches-merged = branch --list --remotes --merged
   branches-not-merged = branch --list --remotes --no-merged
-	ca = commit --all
-	cam = commit --all --message
-	dt = difftool
+  ca = commit --all
+  cam = commit --all --message
+  dt = difftool
   rlog = log --reverse --max-count=16
+[fetch]
+  prune = true

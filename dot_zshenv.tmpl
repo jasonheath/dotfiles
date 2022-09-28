@@ -22,6 +22,7 @@ fi
 # export MANPATH="/usr/local/man:$MANPATH"
 
 {{- if eq .chezmoi.os "darwin" }}
+
 #export PATH_GO='/Users/jasonheath/Development/go'
 export PATH_HOMEBREW="/usr/local/bin:/usr/local/sbin"
 export PATH_HOME_BIN="$HOME/bin"
@@ -31,7 +32,17 @@ export PATH_VSCODE="/Applications/Visual Studio Code.app/Contents/Resources/app/
 
 export PATH="$PATH_HOME_BIN:$PATH_MACVIM:$PATH_VSCODE:$PATH_HOMEBREW:$PATH"
 {{- else if eq .chezmoi.os "linux" }}
-export PATH="$HOME/bin:$PATH"
+export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
+export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar";
+export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew";
+
+export PATH_HOMEBREW="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin";
+export MANPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/man";
+export INFOPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/info";
+
+export PATH="$PATH_HOMEBREW:${PATH+:$PATH}";
+export MANPATH="$MANPATH_HOMEBREW:${MANPATH+:$MANPATH}:";
+export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 {{- end }}
 
 #export $COLORTERM=truecolor

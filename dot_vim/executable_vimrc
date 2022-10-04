@@ -1,6 +1,4 @@
-set nocompatible 
-" actually run by default so could elide
-" However, keep as the first line because VIVE LA VIM!
+set nocompatible " actually run by default so could elide " However, keep as the first line because VIVE LA VIM!
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" MANDATORY SETTINGS are for my sanity
@@ -19,9 +17,6 @@ set shiftwidth=2
 set tabstop=2
 set smartindent
 set visualbell
-
-"set guifont=Monaco:h14
-set guifont=AndaleMono:h18
 
 set encoding=utf8
 set ffs=unix,dos,mac
@@ -69,9 +64,6 @@ packloadall
 " All messages and errors will be ignored.
 silent! helptags ALL
 
-set background&
-colorscheme morning
-
 
 " Automatically switch light/dark background + theme
 function! SetAppearance(...)
@@ -103,22 +95,20 @@ iab zhd #---------------------------------------------------------------------<c
 
 
 
-" -=> Everything Below has been commented out <=- 
-"
-
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" determine the operating system we are running on
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-":let OS = system('uname -s' )
+:let OS = system('uname -s' )
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" set guifont based on the operating system
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-":if has('linux')
-"  set guifont=Luxi\ Mono\ 14
-":elseif has('linux')
-"  set guifont=Monaco:h14
+":if OS has('Linux')
+"  "set guifont=Luxi\ Mono\ 14
+"  set guifont=AndaleMono:h18
+":elseif has('Darwin')
+"  set guifont=InputMono-Regular:h18
 ":endif
+  set guifont=InputMono-Regular:h18
 

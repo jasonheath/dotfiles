@@ -47,10 +47,18 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 
 #export $COLORTERM=truecolor
 
-{{- if eq .chezmoi.username "jaheath" }}
+{{/* personal laptop username is "jasonheath" */}}
+{{/* progress laptop username is "jaheath" */}}
+{{/* parallels vm username is "jah" */}}
+{{- if ne .chezmoi.username "jasonheath" }}
+# BEGIN: Progress/Chef/Habitat ENV variables
 export HAB_ORIGIN=jah_tryhabitat
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
+
+export FS_ROOT_ENVVAR="$HOME/Development/progress/habroot"
+#   END: Progress/Chef/Habitat ENV variables
+
 {{- end }}
 
 export BASH_ENV="$HOME/.bashrc" 

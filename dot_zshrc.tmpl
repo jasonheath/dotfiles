@@ -30,21 +30,19 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  bundler # This plugin adds completion for basic bundler commands, as well as aliases and helper functions for an easier experience with bundler.
   colored-man-pages # This plugin adds colors to man pages.
-  docker # This plugin adds auto-completion and aliases for docker.
-  docker-compose # This plugin provides completion for docker-compose as well as some aliases for frequent docker-compose commands.
-  git # The git plugin provides many aliases and a few useful functions.
-  rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
-  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
-  vi-mode # his plugin increase vi-like zsh functionality.
+  vi-mode # This plugin increases vi-like zsh functionality.
 )
 
 # PLUGINS OF INTEREST PAST AND FUTURE
 #  aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
 #  brew # The plugin adds several aliases for common brew commands
+#  bundler # This plugin adds completion for basic bundler commands, as well as aliases and helper functions for an easier experience with bundler.
+#  docker # This plugin adds auto-completion and aliases for docker.
+#  docker-compose # This plugin provides completion for docker-compose as well as some aliases for frequent docker-compose commands.
 #  docker-machine # Review this down the road
 #  gem # This plugin adds completions and aliases for Gem.
+#  git # The git plugin provides many aliases and a few useful functions.
 #  git-prompt # A zsh prompt that displays information about the current git repository.
 #  golang # This plugin adds completion for the Go Programming Language, as well as some aliases for common Golang commands.
 #  iterm2 # This plugin adds a few functions that are useful when using iTerm2.
@@ -56,6 +54,8 @@ plugins=(
 #        # into your prompt. 
 #        # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
 #  redis-cli # This plugin adds redis-cli completion, based off of {{- .chezmoi.version.builtBy }} completion.
+#  rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
+#  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
 
 source $ZSH/oh-my-zsh.sh
 

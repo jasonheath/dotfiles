@@ -36,11 +36,12 @@ export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
 export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar";
 export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew";
 
+export PATH_HOME_BIN="$HOME/bin"
 export PATH_HOMEBREW="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin";
 export MANPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/man";
 export INFOPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/info";
 
-export PATH="$PATH_HOMEBREW:${PATH+:$PATH}";
+export PATH="${PATH_HOME_BIN}:${PATH_HOMEBREW}${PATH+:$PATH}";
 export MANPATH="$MANPATH_HOMEBREW:${MANPATH+:$MANPATH}:";
 export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 {{- end }}
@@ -56,7 +57,7 @@ export HAB_ORIGIN=jah_tryhabitat
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
 
-export FS_ROOT="$HOME/Development/progress/habroot/"
+#export FS_ROOT="$HOME/Development/progress/habroot/"
 #   END: Progress/Chef/Habitat ENV variables
 
 {{- end }}

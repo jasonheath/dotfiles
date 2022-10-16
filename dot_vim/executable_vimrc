@@ -55,52 +55,16 @@ syntax enable
 filetype plugin on
 filetype indent on 
 
-" As Instructed at https://github.com/dense-analysis/ale#standard-installation
-" Put these lines at the very end of your vimrc file.
-" Load all plugins now.
-" Plugins need to be added to runtimepath before helptags can be generated.
-packloadall
-" Load all of the helptags now, after plugins have been loaded.
-" All messages and errors will be ignored.
-silent! helptags ALL
-
-set background=light
-colorscheme solarized
-
-"" Automatically switch light/dark background + theme
-"function! SetAppearance(...)
-"  try
-"    let s:mode = systemlist("")[0]
-"    let s:new_bg = ""
-"    let s:new_theme = ""
-"    if s:mode ==? "Dark"
-"      let s:new_bg = "dark"
-"      let s:new_theme = "solarized"
-"    else
-"      let s:new_bg = "light"
-"      let s:new_theme = "solarized"
-"    endif
-"    if &background !=? s:new_bg
-"      let &background = s:new_bg
-"      execute 'colorscheme '.s:new_theme
-"    endif
-"  catch
-"    " Ignore errors
-"  endtry
-"endfunction
-"call SetAppearance()
-"call timer_start(2000, "SetAppearance", {"repeat": -1})
-
-
-
 iab zhd #---------------------------------------------------------------------<cr>#<cr>#---------------------------------------------------------------------<cr><Esc>kka
+
+set guifont=InputMono-Regular:h18
 
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" determine the operating system we are running on
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:let OS = system('uname -s' )
+":let OS = system('uname -s' )
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -112,5 +76,4 @@ iab zhd #---------------------------------------------------------------------<c
 ":elseif has('Darwin')
 "  set guifont=InputMono-Regular:h18
 ":endif
-set guifont=InputMono-Regular:h18
 

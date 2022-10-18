@@ -90,25 +90,11 @@ call plug#end()
 "   filetype indent off   " Disable file-type-specific indentation
 "   syntax off            " Disable syntax highlighting
 
+set background=dark
 colorscheme solarized
 
 "au User LumenLight echom 'Entered light mode'
 "au User LumenDark echom 'Entered dark mode'
 
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" determine the operating system we are running on
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-":let OS = system('uname -s' )
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" set guifont based on the operating system
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-":if OS has('Linux')
-"  "set guifont=Luxi\ Mono\ 14
-"  set guifont=AndaleMono:h18
-":elseif has('Darwin')
-"  set guifont=InputMono-Regular:h18
-":endif
+let g:airline_theme='solarized'
 

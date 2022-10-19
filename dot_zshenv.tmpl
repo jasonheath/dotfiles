@@ -57,6 +57,8 @@ export HAB_ORIGIN=jah_tryhabitat
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
 
+export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }}
+
 #export FS_ROOT="$HOME/Development/progress/habroot/"
 #   END: Progress/Chef/Habitat ENV variables
 

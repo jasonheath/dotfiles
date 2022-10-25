@@ -57,6 +57,9 @@ plugins=(
 #  rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
 #  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
 
+
+fpath=("$HOME/.oh-my-zsh/custom/fpath" $fpath)
+
 source $ZSH/oh-my-zsh.sh
 
 # `.zshrc' is sourced in interactive shells. It should contain commands to set

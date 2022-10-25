@@ -53,7 +53,7 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 {{/* parallels vm username is "jah" */}}
 {{- if ne .chezmoi.username "jasonheath" }}
 # BEGIN: Progress/Chef/Habitat ENV variables
-export HAB_ORIGIN=jah_tryhabitat
+export HAB_ORIGIN=jasonheath
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
 
@@ -63,6 +63,12 @@ export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }}
 #   END: Progress/Chef/Habitat ENV variables
 
 {{- end }}
+
+# https://github.com/rbenv/ruby-build/wiki
+# For Ruby versions 2.x–3.0:
+# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+# Ruby 3.1 and above requires OpenSSL 3:
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
 
 export BASH_ENV="$HOME/.bashrc" 
 

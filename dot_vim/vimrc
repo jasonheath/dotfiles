@@ -74,7 +74,7 @@ call plug#begin()
 
 Plug 'altercation/vim-colors-solarized'
 
-Plug 'vimpostor/vim-lumen'
+" Plug 'vimpostor/vim-lumen'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -90,7 +90,7 @@ call plug#end()
 "   filetype indent off   " Disable file-type-specific indentation
 "   syntax off            " Disable syntax highlighting
 
-set background=dark
+set background=light
 colorscheme solarized
 
 "au User LumenLight echom 'Entered light mode'

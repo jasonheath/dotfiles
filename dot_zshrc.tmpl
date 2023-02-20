@@ -90,10 +90,11 @@ alias la1='ls -1AFGh'
 
 
 # ZSH named directories
-habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
-builder={{- .chezmoi.homeDir }}/Development/progress/builder
 core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
-: ~habitat ~builder ~core_plans
+builder={{- .chezmoi.homeDir }}/Development/progress/builder
+habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
+notes={{- .chezmoi.homeDir }}/Development/personal/notes
+: ~core_plans ~builder ~habitat ~notes
 
 
 # configure the environment for cargo/rust

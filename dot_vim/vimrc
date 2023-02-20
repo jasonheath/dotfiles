@@ -90,11 +90,11 @@ call plug#end()
 "   filetype indent off   " Disable file-type-specific indentation
 "   syntax off            " Disable syntax highlighting
 
-set background=light
-colorscheme solarized
+set background=dark
+colorscheme torte
 
 "au User LumenLight echom 'Entered light mode'
 "au User LumenDark echom 'Entered dark mode'
 
-let g:airline_theme='solarized'
+"let g:airline_theme='solarized'
 

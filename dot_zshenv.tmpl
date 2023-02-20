@@ -50,14 +50,17 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 
 {{/* personal laptop username is "jasonheath" */}}
 {{/* progress laptop username is "jaheath" */}}
-{{/* parallels vm username is "jah" */}}
+{{/* ubuntu parallels vm username is "jah" */}}
+{{/* windows parallels vm username is "jaheath" */}}
 {{- if ne .chezmoi.username "jasonheath" }}
+
 # BEGIN: Progress/Chef/Habitat ENV variables
 export HAB_ORIGIN=jasonheath
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
 
 export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }}
+#export HAB_SUP_BINARY="/home/jah/Development/progress/habitat/target/debug/hab-sup"
 
 # Environment variables needed to support the build
 export LIBZMQ_INCLUDE_DIR="/usr/include"
@@ -66,15 +69,19 @@ export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"
 export PROTOC="/usr/bin/protoc"
 export PROTOC_INCLUDE="/usr/include"
 
+export AWS_PROFILE=habitat
+
 #export FS_ROOT="$HOME/Development/progress/habroot/"
 #   END: Progress/Chef/Habitat ENV variables
+
 
 {{- end }}
 
 
-export RA_LOG="warn" # the logging level for rust analyzer
+export RA_LOG="error" # the logging level for rust analyzer
 export RUST_BACKTRACE="0"
-export RUST_LOG="trace"
+#export RUST_LOG="info,manager::file_watcher=trace"
+export RUST_LOG=""
 
 # https://github.com/rbenv/ruby-build/wiki
 # For Ruby versions 2.x–3.0:

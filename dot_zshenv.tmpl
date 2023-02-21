@@ -19,6 +19,10 @@ fi
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 
+#---------------------------------------------------------------------
+# PATH management
+#---------------------------------------------------------------------
+
 # export MANPATH="/usr/local/man:$MANPATH"
 
 {{- if eq .chezmoi.os "darwin" }}
@@ -54,15 +58,33 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 {{/* windows parallels vm username is "jaheath" */}}
 {{- if ne .chezmoi.username "jasonheath" }}
 
-# BEGIN: Progress/Chef/Habitat ENV variables
+
+#---------------------------------------------------------------------
+# Progress/Chef/Habitat ENV variables
+# https://docs.chef.io/habitat/environment_variables/
+#---------------------------------------------------------------------
+
+# REQUIRED
+export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }} # NO DEFAULT
 export HAB_ORIGIN=jasonheath
+
+# OPTIONAL 
+export HAB_BINLINK_DIR=/hab/bin #DEFAULT=/hab/bin
+export HAB_BLDR_CHANNEL=stable #DEFAULT=stable
+export HAB_BLDR_URL=https://bldr.habitat.sh #DEFAULT=https://bldr.habitat.sh
+
+# LESS DOCUMENTED
+#export HAB_BUTTERFLY_BINARY
+#export HAB_LAUNCH_BINARY
+#export HAB_STUDIO_BINARY
+#export HAB_SUP_BINARY="/home/jah/Development/progress/habitat/target/debug/hab-sup" # NO DEFAULT?
+
+
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
 
-export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }}
-#export HAB_SUP_BINARY="/home/jah/Development/progress/habitat/target/debug/hab-sup"
 
-# Environment variables needed to support the build
+# environment variables supporting the habitat build
 export LIBZMQ_INCLUDE_DIR="/usr/include"
 export LIBZMQ_LIB_DIR="/usr/lib/x86_64-linux-gnu"
 export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"
@@ -74,14 +96,22 @@ export AWS_PROFILE=habitat
 #export FS_ROOT="$HOME/Development/progress/habroot/"
 #   END: Progress/Chef/Habitat ENV variables
 
-
 {{- end }}
 
+
+#---------------------------------------------------------------------
+# rust environment variables
+#---------------------------------------------------------------------
 
 export RA_LOG="error" # the logging level for rust analyzer
 export RUST_BACKTRACE="0"
 #export RUST_LOG="info,manager::file_watcher=trace"
 export RUST_LOG=""
+
+
+#---------------------------------------------------------------------
+# ruby environment variables 
+#---------------------------------------------------------------------
 
 # https://github.com/rbenv/ruby-build/wiki
 # For Ruby versions 2.x–3.0:
@@ -89,5 +119,4 @@ export RUST_LOG=""
 # Ruby 3.1 and above requires OpenSSL 3:
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
 
-export BASH_ENV="$HOME/.bashrc" 
 

@@ -35,19 +35,21 @@ export PATH_MACVIM="/Applications/MacVim.app/Contents/bin"
 export PATH_VSCODE="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 
 export PATH="$PATH_HOME_BIN:$PATH_MACVIM:$PATH_VSCODE:$PATH_HOMEBREW:$PATH"
+
 {{- else if eq .chezmoi.os "linux" }}
-export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew";
-export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar";
-export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew";
+
+export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
+export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
 
 export PATH_HOME_BIN="$HOME/bin"
-export PATH_HOMEBREW="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin";
-export MANPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/man";
-export INFOPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/info";
+export PATH_HOMEBREW="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin"
+export MANPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/man"
+export INFOPATH_HOMEBREW="/home/linuxbrew/.linuxbrew/share/info"
 
-export PATH="${PATH_HOME_BIN}:${PATH_HOMEBREW}${PATH+:$PATH}";
-export MANPATH="$MANPATH_HOMEBREW:${MANPATH+:$MANPATH}:";
-export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
+export PATH="${PATH_HOME_BIN}:${PATH_HOMEBREW}${PATH+:$PATH}"
+export MANPATH="$MANPATH_HOMEBREW:${MANPATH+:$MANPATH}:"
+export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}"
+
 {{- end }}
 
 #export $COLORTERM=truecolor
@@ -56,13 +58,13 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}";
 {{/* progress laptop username is "jaheath" */}}
 {{/* ubuntu parallels vm username is "jah" */}}
 {{/* windows parallels vm username is "jaheath" */}}
-{{- if ne .chezmoi.username "jasonheath" }}
-
 
 #---------------------------------------------------------------------
 # Progress/Chef/Habitat ENV variables
 # https://docs.chef.io/habitat/environment_variables/
 #---------------------------------------------------------------------
+
+export AWS_PROFILE=habitat
 
 # REQUIRED
 export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }} # NO DEFAULT
@@ -79,22 +81,28 @@ export HAB_BLDR_URL=https://bldr.habitat.sh #DEFAULT=https://bldr.habitat.sh
 #export HAB_STUDIO_BINARY
 #export HAB_SUP_BINARY="/home/jah/Development/progress/habitat/target/debug/hab-sup" # NO DEFAULT?
 
+#export FS_ROOT="$HOME/Development/progress/habroot/"
+#   END: Progress/Chef/Habitat ENV variables
 
 # To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
 # the arguments before running 'hab studio enter'.
 
+# HABITAT environment variables supporting the habitat build
+{{- if eq .chezmoi.os "darwin" }}
 
-# environment variables supporting the habitat build
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
+export LIBZMQ_INCLUDE_DIR="/usr/local/include"
+export LIBZMQ_LIB_DIR="/usr/local/lib"
+export PROTOC="/usr/local/bin/protoc"
+export PROTOC_INCLUDE="/usr/local/include"
+
+{{- else if eq .chezmoi.os "linux" }}
+
 export LIBZMQ_INCLUDE_DIR="/usr/include"
 export LIBZMQ_LIB_DIR="/usr/lib/x86_64-linux-gnu"
 export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"
 export PROTOC="/usr/bin/protoc"
 export PROTOC_INCLUDE="/usr/include"
-
-export AWS_PROFILE=habitat
-
-#export FS_ROOT="$HOME/Development/progress/habroot/"
-#   END: Progress/Chef/Habitat ENV variables
 
 {{- end }}
 
@@ -119,4 +127,14 @@ export RUST_LOG=""
 # Ruby 3.1 and above requires OpenSSL 3:
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
 
+#---------------------------------------------------------------------
+# homebrew (https://brew.sh/)
+#---------------------------------------------------------------------
+{{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
+export HOMEBREW_PREFIX="/usr/local"
+{{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
+export HOMEBREW_PREFIX="/opt/local"
+{{- else if eq .chezmoi.os "linux" }}
+export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+{{- end }}
 

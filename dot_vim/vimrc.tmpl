@@ -68,13 +68,16 @@ call plug#begin()
 " You can specify a custom plugin directory by passing it as the argument
 "   - e.g. `call plug#begin('~/.vim/plugged')`
 "   - Avoid using standard Vim directory names like 'plugin'
+" Initialize plugin system
+" - Automatically executes `filetype plugin indent on` and `syntax enable`.
 
 " Make sure you use single quotes
 
-
 Plug 'altercation/vim-colors-solarized'
 
-" Plug 'vimpostor/vim-lumen'
+{{- if eq .chezmoi.os "darwin" }}
+Plug 'vimpostor/vim-lumen'
+{{- end }}
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -85,21 +88,20 @@ Plug 'preservim/tagbar'
 
 Plug 'chrisbra/Colorizer'
 
-" Initialize plugin system
-" - Automatically executes `filetype plugin indent on` and `syntax enable`.
 call plug#end()
-
-set termguicolors
 
 " You can revert the settings after the call like so:
 "   filetype indent off   " Disable file-type-specific indentation
 "   syntax off            " Disable syntax highlighting
+"
 
-"set background=dark
-"colorscheme torte
+{{- if eq .chezmoi.os "darwin" }}
+" au User LumenLight echom 'Entered light mode'
+" au User LumenDark echom 'Entered dark mode'
+{{- else if eq .chezmoi.os "linux" }}
+set background=dark
+{{- end }}
 
-"au User LumenLight echom 'Entered light mode'
-"au User LumenDark echom 'Entered dark mode'
-
-"let g:airline_theme='solarized'
+colorscheme solarized
+let g:airline_theme='solarized'
 

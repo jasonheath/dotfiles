@@ -67,7 +67,9 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}"
 export AWS_PROFILE=habitat
 
 # REQUIRED
+{{- if ne .chezmoi.username "jasonheath" }}
 export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }} # NO DEFAULT
+{{- end }}
 export HAB_ORIGIN=jasonheath
 
 # OPTIONAL 

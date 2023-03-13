@@ -3,13 +3,10 @@
 #
 # '.zshrc' is 2/4 files that are executed
 
-
-fpath=("$HOME/.zsh/fpath" /usr/local/share/zsh/site-functions $fpath)
-
+fpath=("$HOME/.zsh/fpath" "$HOME/.oh-my-zsh/custom/fpath" /usr/local/share/zsh/site-functions $fpath)
 
 # Path to your oh-my-zsh installation.
 export ZSH={{- .chezmoi.homeDir }}/.oh-my-zsh
-
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -18,20 +15,16 @@ ZSH_THEME="rkj-repos" # this is the one I've been digging
 #ZSH_THEME="fletcherm"
 #ZSH_THEME="random"
 
-
 # Uncomment the following line to disable auto-setting terminal title.
 DISABLE_AUTO_TITLE="true"
 
-
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
-
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 HIST_STAMPS="yyyy-mm-dd"
-
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -42,7 +35,6 @@ plugins=(
   multipass # This plugin provides completion for multipass, as well as aliases for multipass commands.
   vi-mode # This plugin increases vi-like zsh functionality.
 )
-
 
 # PLUGINS OF INTEREST PAST AND FUTURE
 #  aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
@@ -67,17 +59,20 @@ plugins=(
 #  rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
 #  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
 
-
-fpath=("$HOME/.oh-my-zsh/custom/fpath" $fpath)
-
-
 source $ZSH/oh-my-zsh.sh
+
+#---------------------------------------------------------------------
+# oh my zsh above
+# zsh below
+#---------------------------------------------------------------------
 
 
 # `.zshrc' is sourced in interactive shells. It should contain commands to set
 # up aliases, functions, options, key bindings, etc.
 
-
+#---------------------------------------------------------------------
+# zsh aliases
+#---------------------------------------------------------------------
 alias rm='rm -i'
 alias cp='cp -i'
 
@@ -88,31 +83,42 @@ alias  la='ls  -AFG'
 alias lal='ls  -AFGhl'
 alias la1='ls -1AFGh'
 
+{{- if eq .chezmoi.os "darwin" }}
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+alias chrome='open -a /Applications/Google\ Chrome.app'
+alias firefox='open -a /Applications/Firefox.app'
+alias safari='open -a /Applications/Safari.app'
+{{- end }}
 
-# ZSH named directories
+#---------------------------------------------------------------------
+# zsh named directories
+#---------------------------------------------------------------------
 core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
 builder={{- .chezmoi.homeDir }}/Development/progress/builder
 habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
 notes={{- .chezmoi.homeDir }}/Development/personal/notes
 : ~core_plans ~builder ~habitat ~notes
 
-
-# configure the environment for cargo/rust
+#---------------------------------------------------------------------
+# rust run commands
+#---------------------------------------------------------------------
 source "$HOME/.cargo/env"
 
-
-# configure the environment for rbenv's management of ruby
+#---------------------------------------------------------------------
+# ruby run commands
+#---------------------------------------------------------------------
 eval "$(rbenv init - zsh)"
 RUBY_MANPATH="$(rbenv prefix)/share/man"
 export MANPATH="$RUBY_MANPATH:$MANPATH"
 
-
+#---------------------------------------------------------------------
+# nvm run commands (https://nvm.sh)
+#---------------------------------------------------------------------
 {{- if eq .chezmoi.os "darwin" }}
-#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-#alias iterm-into-the-light="it2setcolor preset 'Solarized Light'"
-#alias iterm-darkness-falls="it2setcolor preset 'Solarized Dark'"
-alias chrome='open -a /Applications/Google\ Chrome.app'
-alias firefox='open -a /Applications/Firefox.app'
-alias safari='open -a /Applications/Safari.app'
+# nvm darwin is not configured yet
+{{- else if eq .chezmoi.os "linux" }}
+export NVM_DIR="$HOME/.nvm"
+[ -s "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" ] && source "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh"  # loads nvm
+[ -s "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm"  # loads bash_completion
 {{- end }}
 

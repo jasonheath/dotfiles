@@ -66,7 +66,7 @@ export AWS_PROFILE=habitat
 
 # REQUIRED
 {{- if and (ne .chezmoi.username "jasonheath") (ne .chezmoi.username "ubuntu") }}
-export HAB_AUTH_TOKEN={{ keyring "HAB_AUTH_TOKEN" "jaheath" | quote }} # NO DEFAULT
+export HAB_AUTH_TOKEN=FIXME
 {{- end }}
 export HAB_ORIGIN=jasonheath
 

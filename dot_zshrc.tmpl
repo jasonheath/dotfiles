@@ -107,13 +107,16 @@ source "$HOME/.cargo/env"
 #---------------------------------------------------------------------
 # ruby run commands
 #---------------------------------------------------------------------
-eval "$(rbenv init - zsh)"
-RUBY_MANPATH="$(rbenv prefix)/share/man"
-export MANPATH="$RUBY_MANPATH:$MANPATH"
+if [[ -s $(whence rbenv) ]]; then
+  eval "$(rbenv init - zsh)"
+  RUBY_MANPATH="$(rbenv prefix)/share/man"
+  export MANPATH="$RUBY_MANPATH:$MANPATH"
+fi
 
 #---------------------------------------------------------------------
 # nvm run commands (https://nvm.sh)
 #---------------------------------------------------------------------
+if [[ -s $(whence nvm) ]]; then
 {{- if eq .chezmoi.os "darwin" }}
 # nvm darwin is not configured yet
 {{- else if eq .chezmoi.os "linux" }}
@@ -121,4 +124,5 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" ] && source "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh"  # loads nvm
 [ -s "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm"  # loads bash_completion
 {{- end }}
+fi
 

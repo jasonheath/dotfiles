@@ -157,16 +157,18 @@ export RUST_BACKTRACE="0"
 #---------------------------------------------------------------------
 # ruby environment variables 
 #---------------------------------------------------------------------
-
-# https://github.com/rbenv/ruby-build/wiki
-# For Ruby versions 2.x–3.0:
-# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-# Ruby 3.1 and above requires OpenSSL 3:
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
+if [[ -s $(whence brew) ]]; then
+  # https://github.com/rbenv/ruby-build/wiki
+  # For Ruby versions 2.x–3.0:
+  # export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+  # Ruby 3.1 and above requires OpenSSL 3:
+  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
+fi
 
 #---------------------------------------------------------------------
 # homebrew (https://brew.sh/)
 #---------------------------------------------------------------------
+if [[ -s $(whence brew) ]]; then
 {{- if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "amd64") }}
 export HOMEBREW_PREFIX="/usr/local"
 {{- else if and (eq .chezmoi.os "darwin") (eq .chezmoi.arch "arm64") }}
@@ -174,4 +176,5 @@ export HOMEBREW_PREFIX="/opt/local"
 {{- else if eq .chezmoi.os "linux" }}
 export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
 {{- end }}
+fi
 

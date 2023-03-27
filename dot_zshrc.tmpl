@@ -97,7 +97,9 @@ core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
 builder={{- .chezmoi.homeDir }}/Development/progress/builder
 habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
 notes={{- .chezmoi.homeDir }}/Development/personal/notes
-: ~core_plans ~builder ~habitat ~notes
+docker={{- .chezmoi.homeDir }}/Development/personal/docker
+commensurate={{- .chezmoi.homeDir }}/Development/personal/docker/commensurate
+: ~builder ~commensurate ~core_plans ~docker ~habitat ~notes
 
 #---------------------------------------------------------------------
 # rust run commands
@@ -116,13 +118,6 @@ fi
 #---------------------------------------------------------------------
 # nvm run commands (https://nvm.sh)
 #---------------------------------------------------------------------
-if [[ -s $(whence nvm) ]]; then
-{{- if eq .chezmoi.os "darwin" }}
-# nvm darwin is not configured yet
-{{- else if eq .chezmoi.os "linux" }}
 export NVM_DIR="$HOME/.nvm"
-[ -s "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" ] && source "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh"  # loads nvm
-[ -s "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm" ] && source "/home/linuxbrew/.linuxbrew/opt/nvm/etc/bash_completion.d/nvm"  # loads bash_completion
-{{- end }}
-fi
-
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

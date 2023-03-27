@@ -65,8 +65,10 @@ export INFOPATH="$INFOPATH_HOMEBREW:${INFOPATH:-}"
 export AWS_PROFILE=habitat
 
 # REQUIRED
-{{- if and (ne .chezmoi.username "jasonheath") (ne .chezmoi.username "ubuntu") }}
-export HAB_AUTH_TOKEN=FIXME
+{{- if and (eq .chezmoi.username "jaheath") (lookPath "op") }}
+export HAB_AUTH_TOKEN={{onepasswordRead "op://progress/HAB_AUTH_TOKEN/credential"}}
+{{- else }}
+export HAB_AUTH_TOKEN=FIXME # by installing 1password CLI
 {{- end }}
 export HAB_ORIGIN=jasonheath
 

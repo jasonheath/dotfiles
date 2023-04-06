@@ -36,12 +36,6 @@ export PATH="$HOME/bin:$PATH"
 
 {{- end }}
 
-{{- if eq .chezmoi.username "jaheath" }}
-export HAB_ORIGIN=jah_tryhabitat
-# To pass custom arguments to run the Supervisor, export 'HAB_STUDIO_SUP' with
-# the arguments before running 'hab studio enter'.
-{{- end }}
-
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth

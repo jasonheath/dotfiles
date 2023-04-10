@@ -103,10 +103,10 @@ call plug#end()
 {{- if eq .chezmoi.os "darwin" }}
 " au User LumenLight echom 'Entered light mode'
 " au User LumenDark echom 'Entered dark mode'
-colorscheme solarized
-let g:airline_theme='solarized'
+"colorscheme solarized
+"let g:airline_theme='solarized'
 {{- else if eq .chezmoi.os "linux" }}
-set background=dark
-colorscheme elflord
 {{- end }}
+set background=dark
+colorscheme koehler
 

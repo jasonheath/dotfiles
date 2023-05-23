@@ -30,11 +30,8 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  colored-man-pages # This plugin adds colors to man pages.
-  multipass # This plugin provides completion for multipass, as well as aliases for multipass commands.
-  vi-mode # This plugin increases vi-like zsh functionality.
-)
+plugins=( colored-man-pages golang rust vi-mode )
+
 
 # PLUGINS OF INTEREST PAST AND FUTURE
 #  aws # This plugin provides completion support for awscli and a few utilities to manage AWS profiles and display them in the prompt.
@@ -56,7 +53,7 @@ plugins=(
 #        # into your prompt. 
 #        # Some functionality of this plugin will not work unless you also have the rbenv plugin gemset installed. https://github.com/jf/rbenv-gemset
 #  redis-cli # This plugin adds redis-cli completion, based off of {{- .chezmoi.version.builtBy }} completion.
-#  rust # This plugin adds completion for rustc, the compiler for the Rust programming language.
+#  rust # This plugin adds completion for rustc, the compiler for the Rust programming language, as well as for rustup and cargo if you have the Rust toolchain installed.
 #  tmux # This plugin provides aliases for tmux, the terminal multiplexer.
 
 source $ZSH/oh-my-zsh.sh
@@ -83,6 +80,8 @@ alias  la='ls  -AFG'
 alias lal='ls  -AFGhl'
 alias la1='ls -1AFGh'
 
+alias cea='chezmoi edit --apply'
+
 {{- if eq .chezmoi.os "darwin" }}
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 alias chrome='open -a /Applications/Google\ Chrome.app'
@@ -91,15 +90,32 @@ alias safari='open -a /Applications/Safari.app'
 {{- end }}
 
 #---------------------------------------------------------------------
+# zsh functions
+#---------------------------------------------------------------------
+function jah_zsh_update_completions () {
+  local dir=$HOME/.zsh/fpath
+  curl https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang > $dir/_golang
+  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh > $dir/_git
+  https://github.com/git/git/blob/master/contrib/completion/git-completion.zsh
+  rustup completions zsh > $dir/_rustup
+
+  rustup completions zsh cargo > $dir/_cargo
+}
+
+
+#---------------------------------------------------------------------
 # zsh named directories
 #---------------------------------------------------------------------
-core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
 builder={{- .chezmoi.homeDir }}/Development/progress/builder
+core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
+docker={{- .chezmoi.homeDir }}/Development/personal/docker
 habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
+misfit_go={{- .chezmoi.homeDir }}/Development/personal/misfit_go
+misfit_rust={{- .chezmoi.homeDir }}/Development/personal/misfit_rust
+node_management={{- .chezmoi.homeDir }}/Development/progress/node-management
 notes={{- .chezmoi.homeDir }}/Development/personal/notes
 on_prem={{- .chezmoi.homeDir }}/Development/progress/on-prem-builder
-docker={{- .chezmoi.homeDir }}/Development/personal/docker
-: ~builder ~core_plans ~docker ~habitat ~notes ~on_prem
+: ~builder ~core_plans ~docker ~habitat ~misfit_go ~misfit_rust ~node_management ~notes ~on_prem
 
 #---------------------------------------------------------------------
 # rust run commands
@@ -126,4 +142,11 @@ export NVM_DIR="$HOME/.nvm"
 # https://direnv.net/docs/hook.html
 eval "$(direnv hook zsh)"
 
+
+#---------------------------------------------------------------------
+# k8s 
+#---------------------------------------------------------------------
+if [[ -s $(whence kubectl) ]]; then
+  source <(kubectl completion zsh)
+fi 
 

@@ -85,6 +85,7 @@ completions=(
   git
   go
   helm
+  kots
   kubectl
   makefile
   minikube

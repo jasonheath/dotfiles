@@ -88,6 +88,7 @@ completions=(
   kubectl
   makefile
   minikube
+  replicated
   ssh
 )
 
@@ -124,7 +125,7 @@ if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
   # TODO: change this to export mvim on macOS and gvim for Linux && Windows
-  export EDITOR='mvim'
+  export EDITOR='vim'
 fi
 
 # Compilation flags

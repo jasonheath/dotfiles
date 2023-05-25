@@ -1,0 +1,274 @@
+# export LANG=en_US.UTF-8
+export LANG=C
+export LC_ALL=C # I think this takes precedence over $LANG but specifying both
+
+
+# Enable the subsequent settings only in interactive sessions
+case $- in
+  *i*) ;;
+    *) return;;
+esac
+
+# Path to your oh-my-bash installation.
+export OSH="$HOME/.oh-my-bash"
+
+# Set name of the theme to load. Optionally, if you set this to "random"
+# it'll load a random theme each time that oh-my-bash is loaded.
+OSH_THEME="jah"
+
+# Uncomment the following line to use case-sensitive completion.
+# OMB_CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# OMB_HYPHEN_SENSITIVE="false"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment the following line to change how often to auto-update (in days).
+# export UPDATE_OSH_DAYS=13
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.  One of the following values can
+# be used to specify the timestamp format.
+# * 'mm/dd/yyyy'     # mm/dd/yyyy + time
+# * 'dd.mm.yyyy'     # dd.mm.yyyy + time
+# * 'yyyy-mm-dd'     # yyyy-mm-dd + time
+# * '[mm/dd/yyyy]'   # [mm/dd/yyyy] + [time] with colors
+# * '[dd.mm.yyyy]'   # [dd.mm.yyyy] + [time] with colors
+# * '[yyyy-mm-dd]'   # [yyyy-mm-dd] + [time] with colors
+# If not set, the default value is 'yyyy-mm-dd'.
+# HIST_STAMPS='yyyy-mm-dd'
+
+# Uncomment the following line if you do not want OMB to overwrite the existing
+# aliases by the default OMB aliases defined in lib/*.sh
+# OMB_DEFAULT_ALIASES="check"
+
+# Would you like to use another custom folder than $OSH/custom?
+# OSH_CUSTOM=/path/to/new-custom-folder
+
+# To disable the uses of "sudo" by oh-my-bash, please set "false" to
+# this variable.  The default behavior for the empty value is "true".
+OMB_USE_SUDO=true
+
+# To enable/disable display of Python virtualenv and condaenv
+# OMB_PROMPT_SHOW_PYTHON_VENV=true  # enable
+# OMB_PROMPT_SHOW_PYTHON_VENV=false # disable
+
+# Which completions would you like to load? (completions can be found in ~/.oh-my-bash/completions/*)
+# Custom completions may be added to ~/.oh-my-bash/custom/completions/
+# Example format: completions=(ssh git bundler gem pip pip3)
+# Add wisely, as too many completions slow down shell startup.
+completions=(
+  brew
+  chezmoi
+  composer
+  docker
+  git
+  go
+  helm
+  kubectl
+  makefile
+  minikube
+  ssh
+)
+
+# Which aliases would you like to load? (aliases can be found in ~/.oh-my-bash/aliases/*)
+# Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
+# Example format: aliases=(vagrant composer git-avh)
+# Add wisely, as too many aliases slow down shell startup.
+aliases=(
+  general
+)
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-bash/plugins/*)
+# Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+  git
+)
+
+# Which plugins would you like to conditionally load? (plugins can be found in ~/.oh-my-bash/plugins/*)
+# Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
+# Example format:
+#  if [ "$DISPLAY" ] || [ "$SSH" ]; then
+#      plugins+=(tmux-autoattach)
+#  fi
+
+source "$OSH"/oh-my-bash.sh
+
+# User configuration
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  # TODO: change this to export mvim on macOS and gvim for Linux && Windows
+  export EDITOR='mvim'
+fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# Set personal aliases, overriding those provided by oh-my-bash libs,
+# plugins, and themes. Aliases can be placed here, though oh-my-bash
+# users are encouraged to define aliases within the OSH_CUSTOM folder.
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias bashconfig="mate ~/.bashrc"
+# alias ohmybash="mate ~/.oh-my-bash"
+
+
+#---------------------------------------------------------------------
+# ABOVE: Oh My Bash 
+# BELOW: JAH Custom 
+#---------------------------------------------------------------------
+
+#---------------------------------------------------------------------
+# aliases
+#---------------------------------------------------------------------
+alias rm='rm -i'
+alias cp='cp -i'
+
+alias   l='ls  -FG'
+alias  l1='ls  -1FG'
+alias  ll='ls  -lFGhl'
+alias  la='ls  -AFG'
+alias lal='ls  -AFGhl'
+alias la1='ls -1AFGh'
+
+alias cea='chezmoi edit --apply'
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+alias chrome='open -a /Applications/Google\ Chrome.app'
+alias firefox='open -a /Applications/Firefox.app'
+alias safari='open -a /Applications/Safari.app'
+
+#---------------------------------------------------------------------
+# directories 
+#---------------------------------------------------------------------
+export builder=/Users/jaheath/Development/progress/builder
+export core_plans=/Users/jaheath/Development/progress/core-plans
+export docker=/Users/jaheath/Development/personal/docker
+export habitat=/Users/jaheath/Development/progress/habitat
+export misfit_go=/Users/jaheath/Development/personal/misfit_go
+export misfit_rust=/Users/jaheath/Development/personal/misfit_rust
+export node_management=/Users/jaheath/Development/progress/node-management
+export notes=/Users/jaheath/Development/personal/notes
+export on_prem=/Users/jaheath/Development/progress/on-prem-builder
+
+#---------------------------------------------------------------------
+# PATH management
+#---------------------------------------------------------------------
+# This path mgmt is focused on adding things to the PATH that I've wanted to
+# install so here we build up a hierarchical ordering of paths and then we
+# append any preexisting PATH value to that so that our preferred executables
+# are found prior to things on the path before we intereceded
+x="$HOME/bin"
+x="${x}:/usr/local/bin:/usr/local/sbin" # homebrew (https://brew.sh/)
+x="${x}:/Applications/MacVim.app/Contents/bin"
+x="${x}:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+if [[ -n $PATH ]]; then
+  x="$x:$PATH"
+fi
+export PATH=$x
+unset x
+
+
+#---------------------------------------------------------------------
+# direnv [https://direnv.net/]
+#---------------------------------------------------------------------
+eval "$(direnv hook bash)"
+
+
+#---------------------------------------------------------------------
+# go [https://go.dev/]
+#---------------------------------------------------------------------
+export GOPATH=$HOME/go
+mkdir -p $GOPATH
+export PATH=$PATH:$GOPATH/bin
+
+#---------------------------------------------------------------------
+# habitat 
+#---------------------------------------------------------------------
+source $HOME/.shell/habitat.env
+
+
+#---------------------------------------------------------------------
+# homebrew [https://brew.sh/]
+#---------------------------------------------------------------------
+if [[ -f /usr/local/bin/brew ]]; then
+  export HOMEBREW_PREFIX="/usr/local"
+fi
+
+
+#---------------------------------------------------------------------
+# kubernetes [https://kubernetes.io/]
+#---------------------------------------------------------------------
+if [[ -d $HOME/.kube ]]; then
+  source <(kubectl completion bash)
+fi 
+
+if [[ -d "$HOME/.krew" ]]; then
+  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+fi 
+
+
+#---------------------------------------------------------------------
+# nvm [https://nvm.sh]
+#---------------------------------------------------------------------
+if [[ -d $HOME/.nvm ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvm bash_completion
+fi
+
+
+#---------------------------------------------------------------------
+# ruby [https://www.ruby-lang.org/]
+#---------------------------------------------------------------------
+if [[ -d $HOME/.rbenv ]]; then
+  # https://github.com/rbenv/ruby-build/wiki
+  # For Ruby versions 2.x–3.0:
+  # export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+  # Ruby 3.1 and above requires OpenSSL 3:
+  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
+
+  eval "$(rbenv init - zsh)"
+  RUBY_MANPATH="$(rbenv prefix)/share/man"
+  export MANPATH="$RUBY_MANPATH:$MANPATH"
+fi
+
+
+#---------------------------------------------------------------------
+# rust [https://www.rust-lang.org/]
+#---------------------------------------------------------------------
+. "$HOME/.cargo/env"
+export RA_LOG="error" # the logging level for rust analyzer
+export RUST_BACKTRACE="0"
+#export RUST_LOG="info,manager::file_watcher=trace"
+
+

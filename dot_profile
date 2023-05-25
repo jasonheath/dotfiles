@@ -1,0 +1,4 @@
+
+export LANG=C
+export LC_ALL=C # I think this overrides LANG but specifying both anyway
+

@@ -54,8 +54,7 @@ GIT_PS1_SHOWCOLORHINTS=true
 # colored hint about the current dirty state
 
 #PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
- PS1='[\u@\h | \t | \w$(__git_ps1 " | (%s)")]\n\$ '
+ PS1='[\u@\h | \t | \w$(__git_ps1 " | %s")]\n\$ '
 #PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
  #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
-
-
+#[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]

@@ -78,6 +78,7 @@ OMB_USE_SUDO=true
 # Example format: completions=(ssh git bundler gem pip pip3)
 # Add wisely, as too many completions slow down shell startup.
 completions=(
+  awscli
   brew
   chezmoi
   composer
@@ -201,6 +202,11 @@ unset x
 
 
 #---------------------------------------------------------------------
+# AWS [https://aws.amazon.com/]
+#---------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------
 # direnv [https://direnv.net/]
 #---------------------------------------------------------------------
 eval "$(direnv hook bash)"
@@ -272,5 +278,4 @@ fi
 export RA_LOG="error" # the logging level for rust analyzer
 export RUST_BACKTRACE="0"
 #export RUST_LOG="info,manager::file_watcher=trace"
-
 

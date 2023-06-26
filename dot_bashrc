@@ -158,9 +158,10 @@ fi
 alias rm='rm -i'
 alias cp='cp -i'
 
-alias   l='ls  -FG'
+alias  ls='ls   -FG'
+alias   l='ls   -FG'
 alias  l1='ls  -1FG'
-alias  ll='ls  -lFGhl'
+alias  ll='ls   -FGhl'
 alias  la='ls  -AFG'
 alias lal='ls  -AFGhl'
 alias la1='ls -1AFGh'
@@ -230,9 +231,9 @@ source $HOME/.shell/habitat.env
 #---------------------------------------------------------------------
 # kubernetes [https://kubernetes.io/]
 #---------------------------------------------------------------------
-if [[ -d $HOME/.kube ]]; then
-  source <(kubectl completion bash)
-fi 
+#if [[ -d $HOME/.kube ]]; then
+#  source <(kubectl completion bash)
+#fi 
 
 if [[ -d "$HOME/.krew" ]]; then
   export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
@@ -242,11 +243,11 @@ fi
 #---------------------------------------------------------------------
 # nvm [https://nvm.sh]
 #---------------------------------------------------------------------
-if [[ -d $HOME/.nvm ]]; then
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvm bash_completion
-fi
+#if [[ -d $HOME/.nvm ]]; then
+#  export NVM_DIR="$HOME/.nvm"
+#  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # loads nvm
+#  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvm bash_completion
+#fi
 
 
 #---------------------------------------------------------------------

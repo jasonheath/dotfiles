@@ -2,122 +2,122 @@
 export LANG=C
 export LC_ALL=C # I think this takes precedence over $LANG but specifying both
 
-
-# Enable the subsequent settings only in interactive sessions
-case $- in
-  *i*) ;;
-    *) return;;
-esac
-
-# Path to your oh-my-bash installation.
-export OSH="$HOME/.oh-my-bash"
-
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-bash is loaded.
-OSH_THEME="jah"
-
-# Uncomment the following line to use case-sensitive completion.
-# OMB_CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# OMB_HYPHEN_SENSITIVE="false"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_OSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.  One of the following values can
-# be used to specify the timestamp format.
-# * 'mm/dd/yyyy'     # mm/dd/yyyy + time
-# * 'dd.mm.yyyy'     # dd.mm.yyyy + time
-# * 'yyyy-mm-dd'     # yyyy-mm-dd + time
-# * '[mm/dd/yyyy]'   # [mm/dd/yyyy] + [time] with colors
-# * '[dd.mm.yyyy]'   # [dd.mm.yyyy] + [time] with colors
-# * '[yyyy-mm-dd]'   # [yyyy-mm-dd] + [time] with colors
-# If not set, the default value is 'yyyy-mm-dd'.
-# HIST_STAMPS='yyyy-mm-dd'
-
-# Uncomment the following line if you do not want OMB to overwrite the existing
-# aliases by the default OMB aliases defined in lib/*.sh
-# OMB_DEFAULT_ALIASES="check"
-
-# Would you like to use another custom folder than $OSH/custom?
-# OSH_CUSTOM=/path/to/new-custom-folder
-
-# To disable the uses of "sudo" by oh-my-bash, please set "false" to
-# this variable.  The default behavior for the empty value is "true".
-OMB_USE_SUDO=true
-
-# To enable/disable display of Python virtualenv and condaenv
-# OMB_PROMPT_SHOW_PYTHON_VENV=true  # enable
-# OMB_PROMPT_SHOW_PYTHON_VENV=false # disable
-
-# Which completions would you like to load? (completions can be found in ~/.oh-my-bash/completions/*)
-# Custom completions may be added to ~/.oh-my-bash/custom/completions/
-# Example format: completions=(ssh git bundler gem pip pip3)
-# Add wisely, as too many completions slow down shell startup.
-completions=(
-  awscli
-  brew
-  chezmoi
-  composer
-  docker
-  git
-  go
-  helm
-  kots
-  kubectl
-  makefile
-  minikube
-  replicated
-  ssh
-)
-
-# Which aliases would you like to load? (aliases can be found in ~/.oh-my-bash/aliases/*)
-# Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
-# Example format: aliases=(vagrant composer git-avh)
-# Add wisely, as too many aliases slow down shell startup.
-aliases=(
-  general
-)
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-bash/plugins/*)
-# Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-  git
-)
-
-# Which plugins would you like to conditionally load? (plugins can be found in ~/.oh-my-bash/plugins/*)
-# Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
-# Example format:
-#  if [ "$DISPLAY" ] || [ "$SSH" ]; then
-#      plugins+=(tmux-autoattach)
-#  fi
-
-source "$OSH"/oh-my-bash.sh
+#OMB # Enable the subsequent settings only in interactive sessions
+#OMB case $- in
+#OMB   *i*) ;;
+#OMB     *) return;;
+#OMB esac
+#OMB 
+#OMB # Path to your oh-my-bash installation.
+#OMB export OSH="$HOME/.oh-my-bash"
+#OMB 
+#OMB # Set name of the theme to load. Optionally, if you set this to "random"
+#OMB # it'll load a random theme each time that oh-my-bash is loaded.
+#OMB OSH_THEME="jah"
+#OMB 
+#OMB # Uncomment the following line to use case-sensitive completion.
+#OMB # OMB_CASE_SENSITIVE="true"
+#OMB 
+#OMB # Uncomment the following line to use hyphen-insensitive completion. Case
+#OMB # sensitive completion must be off. _ and - will be interchangeable.
+#OMB # OMB_HYPHEN_SENSITIVE="false"
+#OMB 
+#OMB # Uncomment the following line to disable bi-weekly auto-update checks.
+#OMB # DISABLE_AUTO_UPDATE="true"
+#OMB 
+#OMB # Uncomment the following line to change how often to auto-update (in days).
+#OMB # export UPDATE_OSH_DAYS=13
+#OMB 
+#OMB # Uncomment the following line to disable colors in ls.
+#OMB # DISABLE_LS_COLORS="true"
+#OMB 
+#OMB # Uncomment the following line to disable auto-setting terminal title.
+#OMB # DISABLE_AUTO_TITLE="true"
+#OMB 
+#OMB # Uncomment the following line to enable command auto-correction.
+#OMB # ENABLE_CORRECTION="true"
+#OMB 
+#OMB # Uncomment the following line to display red dots whilst waiting for completion.
+#OMB # COMPLETION_WAITING_DOTS="true"
+#OMB 
+#OMB # Uncomment the following line if you want to disable marking untracked files
+#OMB # under VCS as dirty. This makes repository status check for large repositories
+#OMB # much, much faster.
+#OMB # DISABLE_UNTRACKED_FILES_DIRTY="true"
+#OMB 
+#OMB # Uncomment the following line if you want to change the command execution time
+#OMB # stamp shown in the history command output.  One of the following values can
+#OMB # be used to specify the timestamp format.
+#OMB # * 'mm/dd/yyyy'     # mm/dd/yyyy + time
+#OMB # * 'dd.mm.yyyy'     # dd.mm.yyyy + time
+#OMB # * 'yyyy-mm-dd'     # yyyy-mm-dd + time
+#OMB # * '[mm/dd/yyyy]'   # [mm/dd/yyyy] + [time] with colors
+#OMB # * '[dd.mm.yyyy]'   # [dd.mm.yyyy] + [time] with colors
+#OMB # * '[yyyy-mm-dd]'   # [yyyy-mm-dd] + [time] with colors
+#OMB # If not set, the default value is 'yyyy-mm-dd'.
+#OMB # HIST_STAMPS='yyyy-mm-dd'
+#OMB 
+#OMB # Uncomment the following line if you do not want OMB to overwrite the existing
+#OMB # aliases by the default OMB aliases defined in lib/*.sh
+#OMB # OMB_DEFAULT_ALIASES="check"
+#OMB 
+#OMB # Would you like to use another custom folder than $OSH/custom?
+#OMB # OSH_CUSTOM=/path/to/new-custom-folder
+#OMB 
+#OMB # To disable the uses of "sudo" by oh-my-bash, please set "false" to
+#OMB # this variable.  The default behavior for the empty value is "true".
+#OMB OMB_USE_SUDO=true
+#OMB 
+#OMB # To enable/disable display of Python virtualenv and condaenv
+#OMB # OMB_PROMPT_SHOW_PYTHON_VENV=true  # enable
+#OMB # OMB_PROMPT_SHOW_PYTHON_VENV=false # disable
+#OMB 
+#OMB # Which completions would you like to load? (completions can be found in ~/.oh-my-bash/completions/*)
+#OMB # Custom completions may be added to ~/.oh-my-bash/custom/completions/
+#OMB # Example format: completions=(ssh git bundler gem pip pip3)
+#OMB # Add wisely, as too many completions slow down shell startup.
+#OMB # JAH: completions come from hombrew so check there before adding here
+#OMB completions=(
+#OMB #  awscli
+#OMB #  brew
+#OMB #  chezmoi
+#OMB #  composer
+#OMB #  docker
+#OMB #  git
+#OMB #  go
+#OMB #  helm
+#OMB #  kots
+#OMB #  kubectl
+#OMB #  makefile
+#OMB #  minikube
+#OMB #  replicated
+#OMB #  ssh
+#OMB )
+#OMB 
+#OMB # Which aliases would you like to load? (aliases can be found in ~/.oh-my-bash/aliases/*)
+#OMB # Custom aliases may be added to ~/.oh-my-bash/custom/aliases/
+#OMB # Example format: aliases=(vagrant composer git-avh)
+#OMB # Add wisely, as too many aliases slow down shell startup.
+#OMB aliases=(
+#OMB   general
+#OMB )
+#OMB 
+#OMB # Which plugins would you like to load? (plugins can be found in ~/.oh-my-bash/plugins/*)
+#OMB # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
+#OMB # Example format: plugins=(rails git textmate ruby lighthouse)
+#OMB # Add wisely, as too many plugins slow down shell startup.
+#OMB plugins=(
+#OMB   git
+#OMB )
+#OMB 
+#OMB # Which plugins would you like to conditionally load? (plugins can be found in ~/.oh-my-bash/plugins/*)
+#OMB # Custom plugins may be added to ~/.oh-my-bash/custom/plugins/
+#OMB # Example format:
+#OMB #  if [ "$DISPLAY" ] || [ "$SSH" ]; then
+#OMB #      plugins+=(tmux-autoattach)
+#OMB #  fi
+#OMB 
+#OMB source "$OSH"/oh-my-bash.sh
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -150,6 +150,7 @@ fi
 # ABOVE: Oh My Bash 
 # BELOW: JAH Custom 
 #---------------------------------------------------------------------
+
 
 #---------------------------------------------------------------------
 # aliases
@@ -224,13 +225,6 @@ export PATH=$PATH:$GOPATH/bin
 #---------------------------------------------------------------------
 source $HOME/.shell/habitat.env
 
-
-#---------------------------------------------------------------------
-# homebrew [https://brew.sh/]
-#---------------------------------------------------------------------
-if [[ -f /usr/local/bin/brew ]]; then
-  export HOMEBREW_PREFIX="/usr/local"
-fi
 
 
 #---------------------------------------------------------------------

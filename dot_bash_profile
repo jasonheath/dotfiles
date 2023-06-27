@@ -58,3 +58,9 @@ GIT_PS1_SHOWCOLORHINTS=true
 #PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
  #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
 #[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
+
+
+export CDPATH="~/Development/progress/:~/Development/personal/"
+
+# per hombrew bash-completion@2 caveats
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"

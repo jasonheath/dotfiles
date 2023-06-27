@@ -94,21 +94,6 @@ alias firefox='open -a /Applications/Firefox.app'
 alias safari='open -a /Applications/Safari.app'
 
 #---------------------------------------------------------------------
-# directories 
-#---------------------------------------------------------------------
-export builder=/Users/jaheath/Development/progress/builder
-export core_plans=/Users/jaheath/Development/progress/core-plans
-export docker=/Users/jaheath/Development/personal/docker
-export habitat=/Users/jaheath/Development/progress/habitat
-export misfit_go=/Users/jaheath/Development/personal/misfit_go
-export misfit_rust=/Users/jaheath/Development/personal/misfit_rust
-export node_management=/Users/jaheath/Development/progress/node-management
-export notes=/Users/jaheath/Development/personal/notes
-export on_prem=/Users/jaheath/Development/progress/on-prem-builder
-
-
-
-#---------------------------------------------------------------------
 # PATH management
 #---------------------------------------------------------------------
 # This path mgmt is focused on adding things to the PATH that I've wanted to
@@ -147,17 +132,12 @@ export PATH=$PATH:$GOPATH/bin
 #---------------------------------------------------------------------
 # habitat 
 #---------------------------------------------------------------------
-source $HOME/.shell/habitat.env
-
+#source $HOME/.shell/habitat.env
 
 
 #---------------------------------------------------------------------
 # kubernetes [https://kubernetes.io/]
 #---------------------------------------------------------------------
-#if [[ -d $HOME/.kube ]]; then
-#  source <(kubectl completion bash)
-#fi 
-
 if [[ -d "$HOME/.krew" ]]; then
   export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 fi 

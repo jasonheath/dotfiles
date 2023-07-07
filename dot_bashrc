@@ -16,42 +16,13 @@ then
   fi
 fi
 
-#---------------------------------------------------------------------
-# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-# depends on hombrew
-#---------------------------------------------------------------------
-GIT_PS1_SHOWDIRTYSTATE=true
-# unstaged (*) and staged (+) changes will be shown next to the branch name
-
-GIT_PS1_SHOWSTASHSTATE=true
-# If something is stashed, then a '$' will be shown next to the branch name.
-
-GIT_PS1_SHOWUNTRACKEDFILES=true
-# If there're untracked files, then a '%' will be shown next to the branch name.
-
-GIT_PS1_SHOWUPSTREAM="auto verbose"
-# see the difference between HEAD and its upstream. A "<" indicates you are
-# behind, ">" indicates you are ahead, "<>" indicates you have diverged and "="
-# indicates that there is no difference. Adding "verbose" shows number of
-# commits ahead/behind (+/-) upstream
-
-GIT_PS1_SHOWCONFLICTSTATE=yes
-# The prompt will include "|CONFLICT" when there are unresolved conflicts
-
-GIT_PS1_SHOWCOLORHINTS=true
-# colored hint about the current dirty state
-
-#PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
- PS1='[\u@\h | \t | \w$(__git_ps1 " | %s")]\n\$ '
-#PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
- #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
-#[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
 export CDPATH="~/Development/progress/:~/Development/personal/"
 
-# per hombrew bash-completion@2 caveats
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+source ~/.bash/prompt
 
+# per hombrew bash-completion@2 caveats
 # export LANG=en_US.UTF-8
 export LANG=C
 export LC_ALL=C # I think this takes precedence over $LANG but specifying both

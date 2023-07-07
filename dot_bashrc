@@ -63,7 +63,11 @@ export LC_ALL=C # I think this takes precedence over $LANG but specifying both
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  # TODO: change this to export mvim on macOS and gvim for Linux && Windows
+  if [[ $OSTYPE =~ darwin.* ]]; then
+    export VISUAL='mvim -f'
+  else
+    export VISUAL='gvim -f'
+  fi
   export EDITOR='vim'
 fi
 

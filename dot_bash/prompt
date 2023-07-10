@@ -32,3 +32,7 @@ GIT_PS1_SHOWCOLORHINTS=true
  #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
 #[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
 
+
+# V-- This was my Oh My Bash Prompt
+# # [jaheath@ubuntu][08:03:08][~]
+# $

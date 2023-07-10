@@ -1,9 +1,9 @@
 #---------------------------------------------------------------------
 # https://brew.sh/
 #---------------------------------------------------------------------
-eval "$(/usr/local/bin/brew shellenv)"
 if type brew &>/dev/null
 then
+  eval "$(/usr/local/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
   if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
   then

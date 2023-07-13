@@ -18,7 +18,7 @@ fi
 
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
-export CDPATH="~/Development/progress/:~/Development/personal/"
+export CDPATH=".:$HOME/Development/progress:$HOME/Development/personal"
 
 source ~/.bash/prompt
 

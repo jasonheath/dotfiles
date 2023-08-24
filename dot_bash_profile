@@ -2,11 +2,11 @@
 
 # Load login settings and environment variables
 if [[ -f $HOME/.profile ]]; then
-  source $HOME/.profile
+  source "$HOME/.profile"
 fi
 
 # Load interactive settings
 if [[ -f $HOME/.bashrc ]]; then
-  source $HOME/.bashrc
+  source "$HOME/.bashrc"
 fi
 

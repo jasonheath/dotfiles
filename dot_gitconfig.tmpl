@@ -1,9 +1,6 @@
 [alias]
   branches-merged = branch --list --remotes --merged
   branches-not-merged = branch --list --remotes --no-merged
-  ca = commit --all
-  cam = commit --all --message
-  #dt = difftool
   #lg = lg1
   #lg1 = lg1-specific --all
   #lg2 = lg2-specific --all
@@ -19,29 +16,24 @@
   #pager = less
   pager = 
 [diff]
+  guitool = vimdiff
   tool = vimdiff
   #prompt = no
 #[difftool]
   #prompt = false
 [fetch]
   prune = true
-# [filter "lfs"]
-#   clean = git-lfs clean -- %f
-#   smudge = git-lfs smudge -- %f
-#   process = git-lfs filter-process
-#   required = true
-#[format]
-  #pretty = reference
 [init]
   defaultBranch = main
-#[log]
-  #abbrevCommit = true
-#[pager]
-  #diff = less
-#[status]
+[merge]
+  guitool = vimdiff
+  tool = vimdiff
+[status]
+  aheadBehind = true
+  branch = true
+  hints = true
+  relativePaths = false
   #short = true
-  #branch = true
-  #hints = true
 [user]
   name = Jason Heath
 {{- if eq .chezmoi.username "jaheath" }} 

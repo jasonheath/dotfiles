@@ -5,27 +5,12 @@ if type brew &>/dev/null
 then
   eval "$(/usr/local/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
-  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
-  then
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
-    do
-      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
-    done
-  fi
+  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
 fi
-
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
 export CDPATH=".:$HOME/Development/progress:$HOME/Development/personal"
 
-source ~/.bash/prompt
-
-# per hombrew bash-completion@2 caveats
-# export LANG=en_US.UTF-8
-export LANG=C
-export LC_ALL=C # I think this takes precedence over $LANG but specifying both
+source "$HOME/.bash/prompt"
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"

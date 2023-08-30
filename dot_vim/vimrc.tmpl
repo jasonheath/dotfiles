@@ -79,21 +79,30 @@ call plug#begin()
 
 " Make sure you use single quotes
 
-
 {{- if eq .chezmoi.os "darwin" }}
 "Plug 'altercation/vim-colors-solarized'
 "Plug 'vimpostor/vim-lumen'
 {{- end }}
 
+Plug 'chrisbra/Colorizer'
+Plug 'dense-analysis/ale'
+Plug 'rust-lang/rust.vim'
+"Plug 'sheerun/vim-polyglot'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-Plug 'rust-lang/rust.vim'
-Plug 'preservim/tagbar'
-
-Plug 'chrisbra/Colorizer'
-
 call plug#end()
+
+au BufRead,BufNewFile */.github/*/*.y{,a}ml 
+  \ let b:ale_linters = {'yaml': ['actionlint']}
+
+"let g:ale_rust_analyzer_executable = '/usr/local/bin/rust-analyzer'
+let g:ale_linters = {
+  \ 'rust': ['analyzer','rustc'] 
+  \ }
+let g:ale_fixers = { 
+  \ 'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'] 
+  \ }
 
 " You can revert the settings after the call like so:
 "   filetype indent off   " Disable file-type-specific indentation
@@ -105,8 +114,10 @@ call plug#end()
 " au User LumenDark echom 'Entered dark mode'
 "colorscheme solarized
 "let g:airline_theme='solarized'
-{{- else if eq .chezmoi.os "linux" }}
-{{- end }}
 set background=dark
-colorscheme koehler
+colorscheme zaibatsu
+{{- else }}
+set background=dark
+colorscheme torte
+{{- end }}
 

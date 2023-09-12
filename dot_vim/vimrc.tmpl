@@ -80,8 +80,9 @@ call plug#begin()
 " Make sure you use single quotes
 
 {{- if eq .chezmoi.os "darwin" }}
+Plug 'vimpostor/vim-lumen'
 "Plug 'altercation/vim-colors-solarized'
-"Plug 'vimpostor/vim-lumen'
+Plug 'NLKNguyen/papercolor-theme'
 {{- end }}
 
 Plug 'chrisbra/Colorizer'
@@ -110,14 +111,15 @@ let g:ale_fixers = {
 "
 
 {{- if eq .chezmoi.os "darwin" }}
-" au User LumenLight echom 'Entered light mode'
-" au User LumenDark echom 'Entered dark mode'
+"au User LumenLight echo 'Entered light mode'
+"au User LumenDark echo 'Entered dark mode'
 "colorscheme solarized
 "let g:airline_theme='solarized'
+colorscheme papercolor
+let g:airline_theme='papercolor'
 set background=dark
-colorscheme zaibatsu
 {{- else }}
-set background=dark
 colorscheme torte
+set background=dark
 {{- end }}
 

@@ -12,20 +12,35 @@
 [core]
   autocrlf = false
   editor = vim --nofork
+  #editor = code --wait
   eol = lf
+{{- if eq .chezmoi.os "darwin" }}
+[diff]
+  guitool = vscode
+  tool = vimdiff
+  guiDefault = true
+[difftool "vscode"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+{{- else if eq .chezmoi.os "linux" }}
 [diff]
   guitool = vimdiff
   tool = vimdiff
-  #prompt = no
-#[difftool]
-  #prompt = false
+{{- end }}
 [fetch]
   prune = true
 [init]
   defaultBranch = main
+{{- if eq .chezmoi.os "darwin" }}
+[merge]
+  guitool = vscode
+  tool = vimdiff
+[mergetool "vscode"]
+  cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+{{- else if eq .chezmoi.os "linux" }}
 [merge]
   guitool = vimdiff
   tool = vimdiff
+{{- end }}
 [status]
   aheadBehind = true
   branch = true
@@ -40,4 +55,13 @@
   email = jason.heath@progress.com
 {{- else }}
   email = jh@jasonheath.com
+{{- end }}
+
+{{- if eq 1 2 }}
+[difftool "sourcetree"]
+   cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+   path =
+[mergetool "sourcetree"]
+   cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+   trustExitCode = true
 {{- end }}

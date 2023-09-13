@@ -1,13 +1,7 @@
 # Just say no to log files, K?
 *.log
 
-# A *.jah file is some one off something I created but don't want git to care
-# about.  Its probably a one off script for something.
-# *.jah
-# *.jah.*
-# jah-notes.md
-# jah-*
-# *jah*
+*.jah
 
 *.diff
 Justfile

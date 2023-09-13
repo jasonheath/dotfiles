@@ -5,8 +5,17 @@ if type brew &>/dev/null
 then
   eval "$(/usr/local/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
-  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
 fi
+
+#---------------------------------------------------------------------
+# https://github.com/scop/bash-completion
+#---------------------------------------------------------------------
+if [[ $OSTYPE =~ darwin.* ]]; then
+  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+else 
+  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+fi
+
 
 export CDPATH=".:$HOME/Development/progress:$HOME/Development/personal"
 
@@ -17,12 +26,13 @@ source "$HOME/.bash/prompt"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
+  export VISUAL='vim'
   export EDITOR='vim'
 else
   if [[ $OSTYPE =~ darwin.* ]]; then
     export VISUAL='mvim -f'
   else
-    export VISUAL='gvim -f'
+    export VISUAL='vim'
   fi
   export EDITOR='vim'
 fi

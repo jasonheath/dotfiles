@@ -81,8 +81,8 @@ call plug#begin()
 
 {{- if eq .chezmoi.os "darwin" }}
 Plug 'vimpostor/vim-lumen'
-"Plug 'altercation/vim-colors-solarized'
-Plug 'NLKNguyen/papercolor-theme'
+Plug 'altercation/vim-colors-solarized'
+"Plug 'NLKNguyen/papercolor-theme'
 {{- end }}
 
 Plug 'chrisbra/Colorizer'
@@ -113,10 +113,10 @@ let g:ale_fixers = {
 {{- if eq .chezmoi.os "darwin" }}
 "au User LumenLight echo 'Entered light mode'
 "au User LumenDark echo 'Entered dark mode'
-"colorscheme solarized
-"let g:airline_theme='solarized'
-colorscheme papercolor
-let g:airline_theme='papercolor'
+colorscheme solarized
+let g:airline_theme='solarized'
+"colorscheme papercolor
+"let g:airline_theme='papercolor'
 set background=dark
 {{- else }}
 colorscheme torte

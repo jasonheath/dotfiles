@@ -19,9 +19,6 @@
   guitool = vscode
   tool = vimdiff
   guiDefault = true
-[difftool "sourcetree"]
-  cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-  path =
 [difftool "vscode"]
   cmd = code --wait --diff $LOCAL $REMOTE
 {{- else if eq .chezmoi.os "linux" }}
@@ -37,9 +34,6 @@
 [merge]
   guitool = vscode
   tool = vimdiff
-[mergetool "sourcetree"]
-  cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-  trustExitCode = true
 [mergetool "vscode"]
   cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
 {{- else if eq .chezmoi.os "linux" }}
@@ -57,9 +51,9 @@
   #short = true
 [user]
   name = Jason Heath
-{{- if eq .chezmoi.username "jaheath" }} 
+{{- if eq .chezmoi.username "jaheath" }}
   email = jason.heath@progress.com
-{{- else if eq .chezmoi.username "jah" }} 
+{{- else if eq .chezmoi.username "jah" }}
   email = jason.heath@progress.com
 {{- else }}
   email = jh@jasonheath.com

@@ -16,6 +16,9 @@ else
   [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
 fi
 
+#---------------------------------------------------------------------
+# https://code.visualstudio.com/docs/terminal/shell-integration
+#---------------------------------------------------------------------
 
 export CDPATH=".:$HOME/Development/progress:$HOME/Development/personal"
 
@@ -116,11 +119,13 @@ fi
 #---------------------------------------------------------------------
 # nvm [https://nvm.sh]
 #---------------------------------------------------------------------
-#if [[ -d $HOME/.nvm ]]; then
-#  export NVM_DIR="$HOME/.nvm"
-#  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # loads nvm
-#  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvm bash_completion
-#fi
+if [[ -d $HOME/.nvm ]]; then
+  export NVM_DIR="$HOME/.nvm"
+  # shellcheck source=/Users/jaheath/.nvm/nvm.sh
+  # shellcheck source=/Users/jaheath/.nvm/bash_completion
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # nvm bash_completion
+fi
 
 
 #---------------------------------------------------------------------

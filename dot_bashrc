@@ -75,8 +75,10 @@ alias safari='open -a /Applications/Safari.app'
 # are found prior to things on the path before we intereceded
 x="$HOME/bin"
 x="${x}:/usr/local/bin:/usr/local/sbin" # homebrew (https://brew.sh/)
-x="${x}:/Applications/MacVim.app/Contents/bin"
-x="${x}:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+#if [[ $OSTYPE =~ darwin.* ]]; then
+#  x="${x}:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+#  x="${x}:/Applications/MacVim.app/Contents/bin"
+#fi
 if [[ -n $PATH ]]; then
   x="$x:$PATH"
 fi

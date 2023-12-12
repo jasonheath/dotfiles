@@ -81,16 +81,18 @@ call plug#begin()
 
 {{- if eq .chezmoi.os "darwin" }}
 Plug 'vimpostor/vim-lumen'
-Plug 'altercation/vim-colors-solarized'
-Plug 'NLKNguyen/papercolor-theme'
 {{- end }}
 
+Plug 'altercation/vim-colors-solarized'
 Plug 'chrisbra/Colorizer'
 Plug 'dense-analysis/ale'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'NoahTheDuke/vim-just'
 Plug 'rust-lang/rust.vim'
 "Plug 'sheerun/vim-polyglot'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+
 
 call plug#end()
 
@@ -113,13 +115,13 @@ let g:ale_fixers = {
 {{- if eq .chezmoi.os "darwin" }}
 "au User LumenLight echo 'Entered light mode'
 "au User LumenDark echo 'Entered dark mode'
-"colorscheme solarized
-"let g:airline_theme='solarized'
-colorscheme papercolor
-let g:airline_theme='papercolor'
-set background=dark
 {{- else }}
-colorscheme torte
-set background=dark
+"set background=dark
 {{- end }}
 
+"colorscheme solarized
+"let g:airline_theme='solarized'
+colorscheme PaperColor
+let g:airline_theme='papercolor'
+"colorscheme torte
+"set background=dark

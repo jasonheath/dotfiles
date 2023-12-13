@@ -92,6 +92,7 @@ Plug 'rust-lang/rust.vim'
 "Plug 'sheerun/vim-polyglot'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+"Plug 'vimpostor/vim-lumen'
 
 
 call plug#end()
@@ -115,9 +116,11 @@ let g:ale_fixers = {
 {{- if eq .chezmoi.os "darwin" }}
 "au User LumenLight echo 'Entered light mode'
 "au User LumenDark echo 'Entered dark mode'
-{{- else }}
-"set background=dark
-{{- end }}
+{{- else if eq .chezmoi.os "linux" }}
+set background=dark
+"set background=v:termrbgresp
+"{{- end }}
+
 
 "colorscheme solarized
 "let g:airline_theme='solarized'

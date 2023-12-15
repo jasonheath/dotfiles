@@ -85,7 +85,7 @@ Plug 'vimpostor/vim-lumen'
 
 Plug 'altercation/vim-colors-solarized'
 Plug 'chrisbra/Colorizer'
-Plug 'dense-analysis/ale'
+"Plug 'dense-analysis/ale'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'NoahTheDuke/vim-just'
 Plug 'rust-lang/rust.vim'
@@ -97,16 +97,16 @@ Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
 
-au BufRead,BufNewFile */.github/*/*.y{,a}ml 
-  \ let b:ale_linters = {'yaml': ['actionlint']}
-
-"let g:ale_rust_analyzer_executable = '/usr/local/bin/rust-analyzer'
-let g:ale_linters = {
-  \ 'rust': ['analyzer','rustc'] 
-  \ }
-let g:ale_fixers = { 
-  \ 'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'] 
-  \ }
+"au BufRead,BufNewFile */.github/*/*.y{,a}ml 
+"  \ let b:ale_linters = {'yaml': ['actionlint']}
+"
+""let g:ale_rust_analyzer_executable = '/usr/local/bin/rust-analyzer'
+"let g:ale_linters = {
+"  \ 'rust': ['analyzer','rustc'] 
+"  \ }
+"let g:ale_fixers = { 
+"  \ 'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'] 
+"  \ }
 
 " You can revert the settings after the call like so:
 "   filetype indent off   " Disable file-type-specific indentation

@@ -1,8 +1,7 @@
 #---------------------------------------------------------------------
 # https://brew.sh/
 #---------------------------------------------------------------------
-if type brew &>/dev/null
-then
+if [[ $OSTYPE =~ darwin.* ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
 fi
@@ -20,7 +19,7 @@ fi
 # https://code.visualstudio.com/docs/terminal/shell-integration
 #---------------------------------------------------------------------
 
-export CDPATH=".:$HOME/Development/progress:$HOME/Development/personal"
+export CDPATH=".:$HOME/Development/chef:$HOME/Development/open-source:$HOME/Development/personal:$HOME/Development/progress:$HOME/Development"
 
 source "$HOME/.bash/prompt"
 

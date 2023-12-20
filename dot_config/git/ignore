@@ -1,12 +1,14 @@
 # Just say no to log files, K?
 *.log
 
+# Things I particularly care about not checking in
 *.jah
 *jah*
-
 *.diff
 Justfile
 justfile
+.justfile
+*.http
 
 *.pub
 

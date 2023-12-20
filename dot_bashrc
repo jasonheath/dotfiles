@@ -51,13 +51,12 @@ fi
 alias rm='rm -i'
 alias cp='cp -i'
 
-alias  ls='ls   -FG'
-alias   l='ls   -FG'
-alias  l1='ls  -1FG'
-alias  ll='ls   -FGhl'
-alias  la='ls  -AFG'
-alias lal='ls  -AFGhl'
-alias la1='ls -1AFGh'
+alias  ls='ls   -F'
+alias  l1='ls  -1F'
+alias  ll='ls   -Fhl'
+alias  la='ls  -AF'
+alias lal='ls  -AFhl'
+alias la1='ls -1AFh'
 
 alias cea='chezmoi edit --apply'
 #test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"

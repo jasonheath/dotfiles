@@ -51,12 +51,22 @@ fi
 alias rm='rm -i'
 alias cp='cp -i'
 
-alias  ls='ls   -F'
-alias  l1='ls  -1F'
-alias  ll='ls   -Fhl'
-alias  la='ls  -AF'
-alias lal='ls  -AFhl'
-alias la1='ls -1AFh'
+# Handle color between macOS and Linux. Will probably bite me on BSD one day...
+if [[ $OSTYPE =~ darwin.* ]]; then
+  alias  ls='ls   -FG'
+  alias  l1='ls  -1FG'
+  alias  ll='ls   -FGhl'
+  alias  la='ls  -AFG'
+  alias lal='ls  -AFGhl'
+  alias la1='ls -1AFGh'
+else 
+  alias  ls='ls   -F --color=auto'
+  alias  l1='ls  -1F --color=auto'
+  alias  ll='ls   -Fhl --color=auto'
+  alias  la='ls  -AF --color=auto'
+  alias lal='ls  -AFhl --color=auto'
+  alias la1='ls -1AFh --color=auto'
+fi
 alias ls-by-time='find . -type f -print0 | xargs -0 ls -tlr'
 
 alias just='just --unstable'

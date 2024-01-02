@@ -57,6 +57,7 @@ alias  ll='ls   -Fhl'
 alias  la='ls  -AF'
 alias lal='ls  -AFhl'
 alias la1='ls -1AFh'
+alias ls-by-time='find . -type f -print0 | xargs -0 ls -tlr'
 
 alias just='just --unstable'
 

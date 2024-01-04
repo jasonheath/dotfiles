@@ -3,7 +3,9 @@
 
 # Things I particularly care about not checking in
 *.jah
-*jah*
+jah*
+Jah*
+JAH*
 *.diff
 Justfile
 justfile

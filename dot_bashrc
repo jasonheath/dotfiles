@@ -9,11 +9,12 @@ fi
 #---------------------------------------------------------------------
 # https://github.com/scop/bash-completion
 #---------------------------------------------------------------------
-if [[ $OSTYPE =~ darwin.* ]]; then
-  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-else 
-  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
-fi
+[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+#if [[ $OSTYPE =~ darwin.* ]]; then
+#  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+#else 
+#  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+#fi
 
 #---------------------------------------------------------------------
 # https://code.visualstudio.com/docs/terminal/shell-integration
@@ -94,6 +95,34 @@ fi
 export PATH=$x
 unset x
 
+# Now dedup the path
+#echo "OLD PATH: $PATH"
+seen=()
+IFS=':' 
+for value in ${PATH[@]}
+do 
+  #echo " SEEN: ${seen[@]}"
+  #echo "VALUE: $value"
+  if ! [[ "${seen[@]}" =~ [[:space:]]"$value"[[:space:]] ]]; then
+  # echo "KEEPING $value"
+    seen+=("$value")
+  #else
+  # echo "DROPPED $value"
+  fi
+done
+
+dedupped_path=''
+for value in "${seen[@]}"
+do 
+  dedupped_path+=$value
+  dedupped_path+=':'
+done
+#echo "NEW PATH: ${dedupped_path%?}"
+export PATH=${dedupped_path%?}
+unset seen
+unset dedupped_path
+IFS=' ' 
+
 
 #---------------------------------------------------------------------
 # AWS [https://aws.amazon.com/]
@@ -103,7 +132,9 @@ unset x
 #---------------------------------------------------------------------
 # direnv [https://direnv.net/]
 #---------------------------------------------------------------------
-eval "$(direnv hook bash)"
+if [ -x "$(command -v foo)" ]; then
+  eval "$(direnv hook bash)"
+fi 
 
 
 #---------------------------------------------------------------------
@@ -158,8 +189,16 @@ fi
 #---------------------------------------------------------------------
 # rust [https://www.rust-lang.org/]
 #---------------------------------------------------------------------
-. "$HOME/.cargo/env"
-export RA_LOG="error" # the logging level for rust analyzer
-export RUST_BACKTRACE="0"
-#export RUST_LOG="info,manager::file_watcher=trace"
+if [[ -d $HOME/.cargo ]]; then
+  . "$HOME/.cargo/env"
+  export RA_LOG="error" # the logging level for rust analyzer
+  export RUST_BACKTRACE="0"
+  #export RUST_LOG="info,manager::file_watcher=trace"
+fi
 
+export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
+
+
+#bind 'set show-all-if-ambiguous on'
+#bind 'TAB:menu-complete'
+#set print-completions-horizontally on

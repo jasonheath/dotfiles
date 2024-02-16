@@ -3,7 +3,8 @@
 #
 # '.zshrc' is 2/4 files that are executed
 
-fpath=("$HOME/.zsh/fpath" "$HOME/.oh-my-zsh/custom/fpath" /usr/local/share/zsh/site-functions $fpath)
+#fpath=("$HOME/.zsh/fpath" "$HOME/.oh-my-zsh/custom/fpath" /usr/local/share/zsh/site-functions $fpath)
+fpath=("$HOME/.zsh/completions" "$HOME/.zsh/fpath" "$HOME/.oh-my-zsh/custom/fpath" /usr/local/share/zsh/site-functions $fpath)
 
 # Path to your oh-my-zsh installation.
 export ZSH={{- .chezmoi.homeDir }}/.oh-my-zsh
@@ -30,7 +31,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=( colored-man-pages golang rust vi-mode )
+plugins=( colored-man-pages multipass vi-mode )
 
 
 # PLUGINS OF INTEREST PAST AND FUTURE
@@ -73,12 +74,14 @@ source $ZSH/oh-my-zsh.sh
 alias rm='rm -i'
 alias cp='cp -i'
 
-alias   l='ls  -FG'
+alias   l='ls   -FG'
 alias  l1='ls  -1FG'
 alias  ll='ls  -lFGhl'
 alias  la='ls  -AFG'
 alias lal='ls  -AFGhl'
 alias la1='ls -1AFGh'
+
+alias just='just --unstable'
 
 alias cea='chezmoi edit --apply'
 
@@ -92,30 +95,39 @@ alias safari='open -a /Applications/Safari.app'
 #---------------------------------------------------------------------
 # zsh functions
 #---------------------------------------------------------------------
-function jah_zsh_update_completions () {
-  local dir=$HOME/.zsh/fpath
-  curl https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang > $dir/_golang
-  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh > $dir/_git
-  https://github.com/git/git/blob/master/contrib/completion/git-completion.zsh
-  rustup completions zsh > $dir/_rustup
+function jah_update_completions () {
 
-  rustup completions zsh cargo > $dir/_cargo
+  local completion_dir=$HOME/.zsh/completions
+
+  docker completion zsh >| $completion_dir/_docker
+  curl https://raw.githubusercontent.com/zsh-users/zsh-completions/master/src/_golang >| $completion_dir/_go
+  kubectl completion zsh >| $completion_dir/_kubectl
+  kubectl kots completion zsh >| $completion_dir/_kots
+  just --completions zsh >| $completion_dir/_just
+  op completion zsh >| $completion_dir/_op
+  replicated completion zsh >| $completion_dir/_replicated
+  rustup completions zsh > $completion_dir/_rustup
+  rustup completions zsh cargo > $completion_dir/_cargo
+  velero completion zsh >| $completion_dir/_velero
 }
 
 
 #---------------------------------------------------------------------
 # zsh named directories
 #---------------------------------------------------------------------
-builder={{- .chezmoi.homeDir }}/Development/progress/builder
-core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
-docker={{- .chezmoi.homeDir }}/Development/personal/docker
-habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
-misfit_go={{- .chezmoi.homeDir }}/Development/personal/misfit_go
-misfit_rust={{- .chezmoi.homeDir }}/Development/personal/misfit_rust
-node_management={{- .chezmoi.homeDir }}/Development/progress/node-management
-notes={{- .chezmoi.homeDir }}/Development/personal/notes
-on_prem={{- .chezmoi.homeDir }}/Development/progress/on-prem-builder
-: ~builder ~core_plans ~docker ~habitat ~misfit_go ~misfit_rust ~node_management ~notes ~on_prem
+
+CDPATH='.:/Users/jaheath/Development/chef:/Users/jaheath/Development/open-source:/Users/jaheath/Development/personal:/Users/jaheath/Development/progress:/Users/jaheath/Development'
+
+#builder={{- .chezmoi.homeDir }}/Development/progress/builder
+#core_plans={{- .chezmoi.homeDir }}/Development/progress/core-plans
+#docker={{- .chezmoi.homeDir }}/Development/personal/docker
+#habitat={{- .chezmoi.homeDir }}/Development/progress/habitat
+#misfit_go={{- .chezmoi.homeDir }}/Development/personal/misfit_go
+#misfit_rust={{- .chezmoi.homeDir }}/Development/personal/misfit_rust
+#node_management={{- .chezmoi.homeDir }}/Development/progress/node-management
+#notes={{- .chezmoi.homeDir }}/Development/personal/notes
+#on_prem={{- .chezmoi.homeDir }}/Development/progress/on-prem-builder
+#: ~builder ~core_plans ~docker ~habitat ~misfit_go ~misfit_rust ~node_management ~notes ~on_prem
 
 #---------------------------------------------------------------------
 # rust run commands

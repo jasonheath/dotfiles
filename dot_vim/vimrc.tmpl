@@ -1,4 +1,6 @@
-set nocompatible " actually run by default so could elide " However, keep as the first line because VIVE LA VIM!
+
+" actually run by default so could elide
+" However, keep as the first line because VIVE LA VIM!
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" MANDATORY SETTINGS are for my sanity
@@ -39,8 +41,8 @@ set splitbelow
 set splitright
 set warn
 set suffixes='.bak,~,.o,.info,.swp,.obj'
-						 ".bak,~,.o,.h,.info,.swp,.obj <-- default
-
+             ".bak,~,.o,.h,.info,.swp,.obj <-- default
+set listchars=eol:%,tab:<->,space:.,multispace:...+,nbsp:_
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "" AUTOCOMMANDS 
@@ -86,6 +88,7 @@ Plug 'vimpostor/vim-lumen'
 Plug 'altercation/vim-colors-solarized'
 Plug 'chrisbra/Colorizer'
 "Plug 'dense-analysis/ale'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'NoahTheDuke/vim-just'
 Plug 'rust-lang/rust.vim'
@@ -93,7 +96,6 @@ Plug 'rust-lang/rust.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 "Plug 'vimpostor/vim-lumen'
-
 
 call plug#end()
 
@@ -122,9 +124,12 @@ set background=dark
 "{{- end }}
 
 
+"colorscheme PaperColor
+"colorscheme torte
 "colorscheme solarized
 "let g:airline_theme='solarized'
-colorscheme PaperColor
-let g:airline_theme='papercolor'
-"colorscheme torte
-"set background=dark
+let macvim_skip_colorscheme=1
+set background=dark
+colorscheme dracula
+let g:airline_theme='dracula'
+

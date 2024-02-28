@@ -1,4 +1,13 @@
 #---------------------------------------------------------------------
+# BASH configuration
+#---------------------------------------------------------------------
+HISTCONTROL=ignoreboth
+# ignoreboth: shorthand for ‘ignorespace’ and ‘ignoredups
+# ignorespace: lines beginning with a space are not saved 
+# ignoredups: lines which match the previous history entry to not be saved
+
+
+#---------------------------------------------------------------------
 # https://brew.sh/
 #---------------------------------------------------------------------
 if [[ $OSTYPE =~ darwin.* ]]; then

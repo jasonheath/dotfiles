@@ -2,7 +2,7 @@
 
 __op_debug()
 {
-    if [[ -n ${BASH_COMP_DEBUG_FILE} ]]; then
+    if [[ -n ${BASH_COMP_DEBUG_FILE:-} ]]; then
         echo "$*" >> "${BASH_COMP_DEBUG_FILE}"
     fi
 }
@@ -40,12 +40,19 @@ __op_handle_go_custom_completion()
 {
     __op_debug "${FUNCNAME[0]}: cur is ${cur}, words[*] is ${words[*]}, #words[@] is ${#words[@]}"
 
+    local shellCompDirectiveError=1
+    local shellCompDirectiveNoSpace=2
+    local shellCompDirectiveNoFileComp=4
+    local shellCompDirectiveFilterFileExt=8
+    local shellCompDirectiveFilterDirs=16
+
     local out requestComp lastParam lastChar comp directive args
 
     # Prepare the command to request completions for the program.
-    # Calling ${words[0]} instead of directly op allows to handle aliases
+    # Calling ${words[0]} instead of directly op allows handling aliases
     args=("${words[@]:1}")
-    requestComp="${words[0]} __completeNoDesc ${args[*]}"
+    # Disable ActiveHelp which is not supported for bash completion v1
+    requestComp="OP_ACTIVE_HELP=0 ${words[0]} __completeNoDesc ${args[*]}"
 
     lastParam=${words[$((${#words[@]}-1))]}
     lastChar=${lastParam:$((${#lastParam}-1)):1}
@@ -71,29 +78,55 @@ __op_handle_go_custom_completion()
         directive=0
     fi
     __op_debug "${FUNCNAME[0]}: the completion directive is: ${directive}"
-    __op_debug "${FUNCNAME[0]}: the completions are: ${out[*]}"
+    __op_debug "${FUNCNAME[0]}: the completions are: ${out}"
 
-    if [ $((directive & 1)) -ne 0 ]; then
+    if [ $((directive & shellCompDirectiveError)) -ne 0 ]; then
         # Error code.  No completion.
         __op_debug "${FUNCNAME[0]}: received error from custom completion go code"
         return
     else
-        if [ $((directive & 2)) -ne 0 ]; then
+        if [ $((directive & shellCompDirectiveNoSpace)) -ne 0 ]; then
             if [[ $(type -t compopt) = "builtin" ]]; then
                 __op_debug "${FUNCNAME[0]}: activating no space"
                 compopt -o nospace
             fi
         fi
-        if [ $((directive & 4)) -ne 0 ]; then
+        if [ $((directive & shellCompDirectiveNoFileComp)) -ne 0 ]; then
             if [[ $(type -t compopt) = "builtin" ]]; then
                 __op_debug "${FUNCNAME[0]}: activating no file completion"
                 compopt +o default
             fi
         fi
+    fi
 
+    if [ $((directive & shellCompDirectiveFilterFileExt)) -ne 0 ]; then
+        # File extension filtering
+        local fullFilter filter filteringCmd
+        # Do not use quotes around the $out variable or else newline
+        # characters will be kept.
+        for filter in ${out}; do
+            fullFilter+="$filter|"
+        done
+
+        filteringCmd="_filedir $fullFilter"
+        __op_debug "File filtering command: $filteringCmd"
+        $filteringCmd
+    elif [ $((directive & shellCompDirectiveFilterDirs)) -ne 0 ]; then
+        # File completion for directories only
+        local subdir
+        # Use printf to strip any trailing newline
+        subdir=$(printf "%s" "${out}")
+        if [ -n "$subdir" ]; then
+            __op_debug "Listing directories in $subdir"
+            __op_handle_subdirs_in_dir_flag "$subdir"
+        else
+            __op_debug "Listing directories in ."
+            _filedir -d
+        fi
+    else
         while IFS='' read -r comp; do
             COMPREPLY+=("$comp")
-        done < <(compgen -W "${out[*]}" -- "$cur")
+        done < <(compgen -W "${out}" -- "$cur")
     fi
 }
 
@@ -133,13 +166,19 @@ __op_handle_reply()
                     PREFIX=""
                     cur="${cur#*=}"
                     ${flags_completion[${index}]}
-                    if [ -n "${ZSH_VERSION}" ]; then
+                    if [ -n "${ZSH_VERSION:-}" ]; then
                         # zsh completion needs --flag= prefix
                         eval "COMPREPLY=( \"\${COMPREPLY[@]/#/${flag}=}\" )"
                     fi
                 fi
             fi
-            return 0;
+
+            if [[ -z "${flag_parsing_disabled}" ]]; then
+                # If flag parsing is enabled, we have completed the flags and can return.
+                # If flag parsing is disabled, we may not know all (or any) of the flags, so we fallthrough
+                # to possibly call handle_go_custom_completion.
+                return 0;
+            fi
             ;;
     esac
 
@@ -159,10 +198,9 @@ __op_handle_reply()
     local completions
     completions=("${commands[@]}")
     if [[ ${#must_have_one_noun[@]} -ne 0 ]]; then
-        completions=("${must_have_one_noun[@]}")
+        completions+=("${must_have_one_noun[@]}")
     elif [[ -n "${has_completion_function}" ]]; then
         # if a go completion function is provided, defer to that function
-        completions=()
         __op_handle_go_custom_completion
     fi
     if [[ ${#must_have_one_flag[@]} -ne 0 ]]; then
@@ -179,13 +217,13 @@ __op_handle_reply()
     fi
 
     if [[ ${#COMPREPLY[@]} -eq 0 ]]; then
-		if declare -F __op_custom_func >/dev/null; then
-			# try command name qualified custom func
-			__op_custom_func
-		else
-			# otherwise fall back to unqualified for compatibility
-			declare -F __custom_func >/dev/null && __custom_func
-		fi
+        if declare -F __op_custom_func >/dev/null; then
+            # try command name qualified custom func
+            __op_custom_func
+        else
+            # otherwise fall back to unqualified for compatibility
+            declare -F __custom_func >/dev/null && __custom_func
+        fi
     fi
 
     # available in bash-completion >= 2, not always present on macOS
@@ -219,7 +257,7 @@ __op_handle_flag()
 
     # if a command required a flag, and we found it, unset must_have_one_flag()
     local flagname=${words[c]}
-    local flagvalue
+    local flagvalue=""
     # if the word contained an =
     if [[ ${words[c]} == *"="* ]]; then
         flagvalue=${flagname#*=} # take in as flagvalue after the =
@@ -238,7 +276,7 @@ __op_handle_flag()
 
     # keep flag value with flagname as flaghash
     # flaghash variable is an associative array which is only supported in bash > 3.
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         if [ -n "${flagvalue}" ] ; then
             flaghash[${flagname}]=${flagvalue}
         elif [ -n "${words[ $((c+1)) ]}" ] ; then
@@ -250,7 +288,7 @@ __op_handle_flag()
 
     # skip the argument to a two word flag
     if [[ ${words[c]} != *"="* ]] && __op_contains_word "${words[c]}" "${two_word_flags[@]}"; then
-			  __op_debug "${FUNCNAME[0]}: found a flag ${words[c]}, skip the next argument"
+        __op_debug "${FUNCNAME[0]}: found a flag ${words[c]}, skip the next argument"
         c=$((c+1))
         # if we are looking for a flags value, don't show commands
         if [[ $c -eq $cword ]]; then
@@ -310,7 +348,7 @@ __op_handle_word()
         __op_handle_command
     elif __op_contains_word "${words[c]}" "${command_aliases[@]}"; then
         # aliashash variable is an associative array which is only supported in bash > 3.
-        if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+        if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
             words[c]=${aliashash[${words[c]}]}
             __op_handle_command
         else
@@ -338,17 +376,17 @@ _op_account_add()
 
     flags+=("--address=")
     two_word_flags+=("--address")
+    local_nonpersistent_flags+=("--address")
     local_nonpersistent_flags+=("--address=")
     flags+=("--email=")
     two_word_flags+=("--email")
+    local_nonpersistent_flags+=("--email")
     local_nonpersistent_flags+=("--email=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--raw")
     local_nonpersistent_flags+=("--raw")
     flags+=("--shorthand=")
     two_word_flags+=("--shorthand")
+    local_nonpersistent_flags+=("--shorthand")
     local_nonpersistent_flags+=("--shorthand=")
     flags+=("--signin")
     local_nonpersistent_flags+=("--signin")
@@ -388,9 +426,6 @@ _op_account_forget()
 
     flags+=("--all")
     local_nonpersistent_flags+=("--all")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -425,9 +460,6 @@ _op_account_get()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -462,9 +494,6 @@ _op_account_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -496,7 +525,7 @@ _op_account()
     commands+=("forget")
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -507,9 +536,6 @@ _op_account()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -547,6 +573,7 @@ _op_completion()
     flags+=("--help")
     flags+=("-h")
     local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-h")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -585,12 +612,11 @@ _op_connect_group_grant()
     local_nonpersistent_flags+=("--all-servers")
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -631,12 +657,11 @@ _op_connect_group_revoke()
     local_nonpersistent_flags+=("--all-servers")
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -675,9 +700,6 @@ _op_connect_group()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -715,11 +737,10 @@ _op_connect_server_create()
     flags+=("--force")
     flags+=("-f")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-f")
     flags+=("--vaults=")
     two_word_flags+=("--vaults")
+    local_nonpersistent_flags+=("--vaults")
     local_nonpersistent_flags+=("--vaults=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -755,9 +776,6 @@ _op_connect_server_delete()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -792,11 +810,9 @@ _op_connect_server_edit()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--name=")
     two_word_flags+=("--name")
+    local_nonpersistent_flags+=("--name")
     local_nonpersistent_flags+=("--name=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -832,9 +848,6 @@ _op_connect_server_get()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -869,9 +882,6 @@ _op_connect_server_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -901,7 +911,7 @@ _op_connect_server()
     commands=()
     commands+=("create")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -910,7 +920,7 @@ _op_connect_server()
     commands+=("edit")
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -921,9 +931,6 @@ _op_connect_server()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -960,15 +967,15 @@ _op_connect_token_create()
 
     flags+=("--expires-in=")
     two_word_flags+=("--expires-in")
+    local_nonpersistent_flags+=("--expires-in")
     local_nonpersistent_flags+=("--expires-in=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1005,11 +1012,9 @@ _op_connect_token_delete()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1045,14 +1050,13 @@ _op_connect_token_edit()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--name=")
     two_word_flags+=("--name")
+    local_nonpersistent_flags+=("--name")
     local_nonpersistent_flags+=("--name=")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1088,11 +1092,9 @@ _op_connect_token_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1123,7 +1125,7 @@ _op_connect_token()
     commands=()
     commands+=("create")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -1131,7 +1133,7 @@ _op_connect_token()
     fi
     commands+=("edit")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -1142,9 +1144,6 @@ _op_connect_token()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1179,14 +1178,13 @@ _op_connect_vault_grant()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1224,14 +1222,13 @@ _op_connect_vault_revoke()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--server=")
     two_word_flags+=("--server")
+    local_nonpersistent_flags+=("--server")
     local_nonpersistent_flags+=("--server=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1271,9 +1268,6 @@ _op_connect_vault()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1303,12 +1297,12 @@ _op_connect()
     commands=()
     commands+=("group")
     commands+=("server")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("servers")
         aliashash["servers"]="server"
     fi
     commands+=("token")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("tokens")
         aliashash["tokens"]="token"
     fi
@@ -1320,9 +1314,6 @@ _op_connect()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1359,18 +1350,19 @@ _op_document_create()
 
     flags+=("--file-name=")
     two_word_flags+=("--file-name")
+    local_nonpersistent_flags+=("--file-name")
     local_nonpersistent_flags+=("--file-name=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--tags=")
     two_word_flags+=("--tags")
+    local_nonpersistent_flags+=("--tags")
     local_nonpersistent_flags+=("--tags=")
     flags+=("--title=")
     two_word_flags+=("--title")
+    local_nonpersistent_flags+=("--title")
     local_nonpersistent_flags+=("--title=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1408,11 +1400,9 @@ _op_document_delete()
 
     flags+=("--archive")
     local_nonpersistent_flags+=("--archive")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1450,18 +1440,19 @@ _op_document_edit()
 
     flags+=("--file-name=")
     two_word_flags+=("--file-name")
+    local_nonpersistent_flags+=("--file-name")
     local_nonpersistent_flags+=("--file-name=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--tags=")
     two_word_flags+=("--tags")
+    local_nonpersistent_flags+=("--tags")
     local_nonpersistent_flags+=("--tags=")
     flags+=("--title=")
     two_word_flags+=("--title")
+    local_nonpersistent_flags+=("--title")
     local_nonpersistent_flags+=("--title=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1499,20 +1490,21 @@ _op_document_get()
 
     flags+=("--file-mode=")
     two_word_flags+=("--file-mode")
+    local_nonpersistent_flags+=("--file-mode")
     local_nonpersistent_flags+=("--file-mode=")
     flags+=("--force")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--include-archive")
     local_nonpersistent_flags+=("--include-archive")
     flags+=("--out-file=")
     two_word_flags+=("--out-file")
     two_word_flags+=("-o")
+    local_nonpersistent_flags+=("--out-file")
     local_nonpersistent_flags+=("--out-file=")
+    local_nonpersistent_flags+=("-o")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1548,13 +1540,11 @@ _op_document_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--include-archive")
     local_nonpersistent_flags+=("--include-archive")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1585,7 +1575,7 @@ _op_document()
     commands=()
     commands+=("create")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -1594,7 +1584,7 @@ _op_document()
     commands+=("edit")
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -1605,9 +1595,6 @@ _op_document()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1644,13 +1631,12 @@ _op_events-api_create()
 
     flags+=("--expires-in=")
     two_word_flags+=("--expires-in")
+    local_nonpersistent_flags+=("--expires-in")
     local_nonpersistent_flags+=("--expires-in=")
     flags+=("--features=")
     two_word_flags+=("--features")
+    local_nonpersistent_flags+=("--features")
     local_nonpersistent_flags+=("--features=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1686,9 +1672,6 @@ _op_events-api()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1725,10 +1708,8 @@ _op_group_create()
 
     flags+=("--description=")
     two_word_flags+=("--description")
+    local_nonpersistent_flags+=("--description")
     local_nonpersistent_flags+=("--description=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1763,9 +1744,6 @@ _op_group_delete()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1802,12 +1780,11 @@ _op_group_edit()
 
     flags+=("--description=")
     two_word_flags+=("--description")
+    local_nonpersistent_flags+=("--description")
     local_nonpersistent_flags+=("--description=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--name=")
     two_word_flags+=("--name")
+    local_nonpersistent_flags+=("--name")
     local_nonpersistent_flags+=("--name=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1843,9 +1820,6 @@ _op_group_get()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -1880,14 +1854,13 @@ _op_group_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--user=")
     two_word_flags+=("--user")
+    local_nonpersistent_flags+=("--user")
     local_nonpersistent_flags+=("--user=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1925,15 +1898,15 @@ _op_group_user_grant()
 
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--role=")
     two_word_flags+=("--role")
+    local_nonpersistent_flags+=("--role")
     local_nonpersistent_flags+=("--role=")
     flags+=("--user=")
     two_word_flags+=("--user")
+    local_nonpersistent_flags+=("--user")
     local_nonpersistent_flags+=("--user=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -1971,9 +1944,6 @@ _op_group_user_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2010,12 +1980,11 @@ _op_group_user_revoke()
 
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--user=")
     two_word_flags+=("--user")
+    local_nonpersistent_flags+=("--user")
     local_nonpersistent_flags+=("--user=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -2048,7 +2017,7 @@ _op_group_user()
     commands=()
     commands+=("grant")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -2060,9 +2029,6 @@ _op_group_user()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2092,7 +2058,7 @@ _op_group()
     commands=()
     commands+=("create")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -2101,12 +2067,12 @@ _op_group()
     commands+=("edit")
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
     commands+=("user")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("users")
         aliashash["users"]="user"
     fi
@@ -2117,9 +2083,40 @@ _op_group()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    flags+=("--account=")
+    two_word_flags+=("--account")
+    flags+=("--cache")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    flags+=("--debug")
+    flags+=("--encoding=")
+    two_word_flags+=("--encoding")
+    flags+=("--format=")
+    two_word_flags+=("--format")
+    flags+=("--iso-timestamps")
+    flags+=("--no-color")
+    flags+=("--session=")
+    two_word_flags+=("--session")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_op_help()
+{
+    last_command="op_help"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2156,21 +2153,24 @@ _op_inject()
 
     flags+=("--file-mode=")
     two_word_flags+=("--file-mode")
+    local_nonpersistent_flags+=("--file-mode")
     local_nonpersistent_flags+=("--file-mode=")
     flags+=("--force")
     flags+=("-f")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-f")
     flags+=("--in-file=")
     two_word_flags+=("--in-file")
     two_word_flags+=("-i")
+    local_nonpersistent_flags+=("--in-file")
     local_nonpersistent_flags+=("--in-file=")
+    local_nonpersistent_flags+=("-i")
     flags+=("--out-file=")
     two_word_flags+=("--out-file")
     two_word_flags+=("-o")
+    local_nonpersistent_flags+=("--out-file")
     local_nonpersistent_flags+=("--out-file=")
+    local_nonpersistent_flags+=("-o")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2207,28 +2207,37 @@ _op_item_create()
 
     flags+=("--category=")
     two_word_flags+=("--category")
+    local_nonpersistent_flags+=("--category")
     local_nonpersistent_flags+=("--category=")
     flags+=("--dry-run")
     local_nonpersistent_flags+=("--dry-run")
+    flags+=("--favorite")
+    local_nonpersistent_flags+=("--favorite")
     flags+=("--generate-password")
     local_nonpersistent_flags+=("--generate-password")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    flags+=("--ssh-generate-key=")
+    two_word_flags+=("--ssh-generate-key")
+    local_nonpersistent_flags+=("--ssh-generate-key")
+    local_nonpersistent_flags+=("--ssh-generate-key=")
     flags+=("--tags=")
     two_word_flags+=("--tags")
+    local_nonpersistent_flags+=("--tags")
     local_nonpersistent_flags+=("--tags=")
     flags+=("--template=")
     two_word_flags+=("--template")
+    local_nonpersistent_flags+=("--template")
     local_nonpersistent_flags+=("--template=")
     flags+=("--title=")
     two_word_flags+=("--title")
+    local_nonpersistent_flags+=("--title")
     local_nonpersistent_flags+=("--title=")
     flags+=("--url=")
     two_word_flags+=("--url")
+    local_nonpersistent_flags+=("--url")
     local_nonpersistent_flags+=("--url=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -2266,11 +2275,9 @@ _op_item_delete()
 
     flags+=("--archive")
     local_nonpersistent_flags+=("--archive")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -2308,22 +2315,29 @@ _op_item_edit()
 
     flags+=("--dry-run")
     local_nonpersistent_flags+=("--dry-run")
+    flags+=("--favorite")
+    local_nonpersistent_flags+=("--favorite")
     flags+=("--generate-password")
     local_nonpersistent_flags+=("--generate-password")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--tags=")
     two_word_flags+=("--tags")
+    local_nonpersistent_flags+=("--tags")
     local_nonpersistent_flags+=("--tags=")
+    flags+=("--template=")
+    two_word_flags+=("--template")
+    local_nonpersistent_flags+=("--template")
+    local_nonpersistent_flags+=("--template=")
     flags+=("--title=")
     two_word_flags+=("--title")
+    local_nonpersistent_flags+=("--title")
     local_nonpersistent_flags+=("--title=")
     flags+=("--url=")
     two_word_flags+=("--url")
+    local_nonpersistent_flags+=("--url")
     local_nonpersistent_flags+=("--url=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -2361,18 +2375,19 @@ _op_item_get()
 
     flags+=("--fields=")
     two_word_flags+=("--fields")
+    local_nonpersistent_flags+=("--fields")
     local_nonpersistent_flags+=("--fields=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--include-archive")
     local_nonpersistent_flags+=("--include-archive")
     flags+=("--otp")
     local_nonpersistent_flags+=("--otp")
+    flags+=("--reveal")
+    local_nonpersistent_flags+=("--reveal")
     flags+=("--share-link")
     local_nonpersistent_flags+=("--share-link")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -2410,21 +2425,21 @@ _op_item_list()
 
     flags+=("--categories=")
     two_word_flags+=("--categories")
+    local_nonpersistent_flags+=("--categories")
     local_nonpersistent_flags+=("--categories=")
     flags+=("--favorite")
     local_nonpersistent_flags+=("--favorite")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--include-archive")
     local_nonpersistent_flags+=("--include-archive")
     flags+=("--long")
     local_nonpersistent_flags+=("--long")
     flags+=("--tags=")
     two_word_flags+=("--tags")
+    local_nonpersistent_flags+=("--tags")
     local_nonpersistent_flags+=("--tags=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -2446,6 +2461,49 @@ _op_item_list()
     noun_aliases=()
 }
 
+_op_item_move()
+{
+    last_command="op_item_move"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--current-vault=")
+    two_word_flags+=("--current-vault")
+    local_nonpersistent_flags+=("--current-vault")
+    local_nonpersistent_flags+=("--current-vault=")
+    flags+=("--destination-vault=")
+    two_word_flags+=("--destination-vault")
+    local_nonpersistent_flags+=("--destination-vault")
+    local_nonpersistent_flags+=("--destination-vault=")
+    flags+=("--account=")
+    two_word_flags+=("--account")
+    flags+=("--cache")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    flags+=("--debug")
+    flags+=("--encoding=")
+    two_word_flags+=("--encoding")
+    flags+=("--format=")
+    two_word_flags+=("--format")
+    flags+=("--iso-timestamps")
+    flags+=("--no-color")
+    flags+=("--session=")
+    two_word_flags+=("--session")
+
+    must_have_one_flag=()
+    must_have_one_flag+=("--destination-vault=")
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _op_item_share()
 {
     last_command="op_item_share"
@@ -2462,15 +2520,15 @@ _op_item_share()
 
     flags+=("--emails=")
     two_word_flags+=("--emails")
+    local_nonpersistent_flags+=("--emails")
     local_nonpersistent_flags+=("--emails=")
     flags+=("--expiry=")
     two_word_flags+=("--expiry")
+    local_nonpersistent_flags+=("--expiry")
     local_nonpersistent_flags+=("--expiry=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--view-once")
     local_nonpersistent_flags+=("--view-once")
@@ -2510,17 +2568,18 @@ _op_item_template_get()
 
     flags+=("--file-mode=")
     two_word_flags+=("--file-mode")
+    local_nonpersistent_flags+=("--file-mode")
     local_nonpersistent_flags+=("--file-mode=")
     flags+=("--force")
     flags+=("-f")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-f")
     flags+=("--out-file=")
     two_word_flags+=("--out-file")
     two_word_flags+=("-o")
+    local_nonpersistent_flags+=("--out-file")
     local_nonpersistent_flags+=("--out-file=")
+    local_nonpersistent_flags+=("-o")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2555,9 +2614,6 @@ _op_item_template_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2587,7 +2643,7 @@ _op_item_template()
     commands=()
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -2598,9 +2654,6 @@ _op_item_template()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2630,7 +2683,7 @@ _op_item()
     commands=()
     commands+=("create")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -2639,13 +2692,18 @@ _op_item()
     commands+=("edit")
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
+    commands+=("move")
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
+        command_aliases+=("mv")
+        aliashash["mv"]="move"
+    fi
     commands+=("share")
     commands+=("template")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("templates")
         aliashash["templates"]="template"
     fi
@@ -2656,9 +2714,6 @@ _op_item()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2698,9 +2753,7 @@ _op_plugin_clear()
     flags+=("--force")
     flags+=("-f")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-f")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2735,9 +2788,6 @@ _op_plugin_credential_import()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2773,9 +2823,6 @@ _op_plugin_credential()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2810,9 +2857,6 @@ _op_plugin_init()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2847,9 +2891,6 @@ _op_plugin_inspect()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2884,9 +2925,6 @@ _op_plugin_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2921,9 +2959,6 @@ _op_plugin_run()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -2952,19 +2987,19 @@ _op_plugin()
 
     commands=()
     commands+=("clear")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("reset")
         aliashash["reset"]="clear"
     fi
     commands+=("credential")
     commands+=("init")
     commands+=("inspect")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("info")
         aliashash["info"]="inspect"
     fi
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -2976,9 +3011,6 @@ _op_plugin()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3015,20 +3047,22 @@ _op_read()
 
     flags+=("--file-mode=")
     two_word_flags+=("--file-mode")
+    local_nonpersistent_flags+=("--file-mode")
     local_nonpersistent_flags+=("--file-mode=")
     flags+=("--force")
     flags+=("-f")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-f")
     flags+=("--no-newline")
     flags+=("-n")
     local_nonpersistent_flags+=("--no-newline")
+    local_nonpersistent_flags+=("-n")
     flags+=("--out-file=")
     two_word_flags+=("--out-file")
     two_word_flags+=("-o")
+    local_nonpersistent_flags+=("--out-file")
     local_nonpersistent_flags+=("--out-file=")
+    local_nonpersistent_flags+=("-o")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3065,10 +3099,8 @@ _op_run()
 
     flags+=("--env-file=")
     two_word_flags+=("--env-file")
+    local_nonpersistent_flags+=("--env-file")
     local_nonpersistent_flags+=("--env-file=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--no-masking")
     local_nonpersistent_flags+=("--no-masking")
     flags+=("--account=")
@@ -3108,9 +3140,7 @@ _op_signin()
     flags+=("--force")
     flags+=("-f")
     local_nonpersistent_flags+=("--force")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-f")
     flags+=("--raw")
     local_nonpersistent_flags+=("--raw")
     flags+=("--account=")
@@ -3151,9 +3181,6 @@ _op_signout()
     local_nonpersistent_flags+=("--all")
     flags+=("--forget")
     local_nonpersistent_flags+=("--forget")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3190,13 +3217,12 @@ _op_update()
 
     flags+=("--channel=")
     two_word_flags+=("--channel")
+    local_nonpersistent_flags+=("--channel")
     local_nonpersistent_flags+=("--channel=")
     flags+=("--directory=")
     two_word_flags+=("--directory")
+    local_nonpersistent_flags+=("--directory")
     local_nonpersistent_flags+=("--directory=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3233,9 +3259,6 @@ _op_user_confirm()
 
     flags+=("--all")
     local_nonpersistent_flags+=("--all")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3270,9 +3293,6 @@ _op_user_delete()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3307,14 +3327,13 @@ _op_user_edit()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--name=")
     two_word_flags+=("--name")
+    local_nonpersistent_flags+=("--name")
     local_nonpersistent_flags+=("--name=")
     flags+=("--travel-mode=")
     two_word_flags+=("--travel-mode")
+    local_nonpersistent_flags+=("--travel-mode")
     local_nonpersistent_flags+=("--travel-mode=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3352,9 +3371,6 @@ _op_user_get()
 
     flags+=("--fingerprint")
     local_nonpersistent_flags+=("--fingerprint")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--me")
     local_nonpersistent_flags+=("--me")
     flags+=("--public-key")
@@ -3395,12 +3411,11 @@ _op_user_list()
 
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3438,15 +3453,15 @@ _op_user_provision()
 
     flags+=("--email=")
     two_word_flags+=("--email")
+    local_nonpersistent_flags+=("--email")
     local_nonpersistent_flags+=("--email=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--language=")
     two_word_flags+=("--language")
+    local_nonpersistent_flags+=("--language")
     local_nonpersistent_flags+=("--language=")
     flags+=("--name=")
     two_word_flags+=("--name")
+    local_nonpersistent_flags+=("--name")
     local_nonpersistent_flags+=("--name=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3484,9 +3499,6 @@ _op_user_reactivate()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3523,10 +3535,8 @@ _op_user_suspend()
 
     flags+=("--deauthorize-devices-after=")
     two_word_flags+=("--deauthorize-devices-after")
+    local_nonpersistent_flags+=("--deauthorize-devices-after")
     local_nonpersistent_flags+=("--deauthorize-devices-after=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3556,7 +3566,7 @@ _op_user()
     commands=()
     commands+=("confirm")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -3565,7 +3575,7 @@ _op_user()
     commands+=("edit")
     commands+=("get")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -3579,9 +3589,6 @@ _op_user()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3618,15 +3625,15 @@ _op_vault_create()
 
     flags+=("--allow-admins-to-manage=")
     two_word_flags+=("--allow-admins-to-manage")
+    local_nonpersistent_flags+=("--allow-admins-to-manage")
     local_nonpersistent_flags+=("--allow-admins-to-manage=")
     flags+=("--description=")
     two_word_flags+=("--description")
+    local_nonpersistent_flags+=("--description")
     local_nonpersistent_flags+=("--description=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--icon=")
     two_word_flags+=("--icon")
+    local_nonpersistent_flags+=("--icon")
     local_nonpersistent_flags+=("--icon=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3662,9 +3669,6 @@ _op_vault_delete()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3701,18 +3705,19 @@ _op_vault_edit()
 
     flags+=("--description=")
     two_word_flags+=("--description")
+    local_nonpersistent_flags+=("--description")
     local_nonpersistent_flags+=("--description=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--icon=")
     two_word_flags+=("--icon")
+    local_nonpersistent_flags+=("--icon")
     local_nonpersistent_flags+=("--icon=")
     flags+=("--name=")
     two_word_flags+=("--name")
+    local_nonpersistent_flags+=("--name")
     local_nonpersistent_flags+=("--name=")
     flags+=("--travel-mode=")
     two_word_flags+=("--travel-mode")
+    local_nonpersistent_flags+=("--travel-mode")
     local_nonpersistent_flags+=("--travel-mode=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3748,9 +3753,6 @@ _op_vault_get()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3787,17 +3789,17 @@ _op_vault_group_grant()
 
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--no-input")
     local_nonpersistent_flags+=("--no-input")
     flags+=("--permissions=")
     two_word_flags+=("--permissions")
+    local_nonpersistent_flags+=("--permissions")
     local_nonpersistent_flags+=("--permissions=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3836,9 +3838,6 @@ _op_vault_group_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3875,17 +3874,17 @@ _op_vault_group_revoke()
 
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--no-input")
     local_nonpersistent_flags+=("--no-input")
     flags+=("--permissions=")
     two_word_flags+=("--permissions")
+    local_nonpersistent_flags+=("--permissions")
     local_nonpersistent_flags+=("--permissions=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -3918,7 +3917,7 @@ _op_vault_group()
     commands=()
     commands+=("grant")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -3930,9 +3929,6 @@ _op_vault_group()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -3969,12 +3965,15 @@ _op_vault_list()
 
     flags+=("--group=")
     two_word_flags+=("--group")
+    local_nonpersistent_flags+=("--group")
     local_nonpersistent_flags+=("--group=")
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
+    flags+=("--permission=")
+    two_word_flags+=("--permission")
+    local_nonpersistent_flags+=("--permission")
+    local_nonpersistent_flags+=("--permission=")
     flags+=("--user=")
     two_word_flags+=("--user")
+    local_nonpersistent_flags+=("--user")
     local_nonpersistent_flags+=("--user=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -4010,19 +4009,19 @@ _op_vault_user_grant()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--no-input")
     local_nonpersistent_flags+=("--no-input")
     flags+=("--permissions=")
     two_word_flags+=("--permissions")
+    local_nonpersistent_flags+=("--permissions")
     local_nonpersistent_flags+=("--permissions=")
     flags+=("--user=")
     two_word_flags+=("--user")
+    local_nonpersistent_flags+=("--user")
     local_nonpersistent_flags+=("--user=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -4061,9 +4060,6 @@ _op_vault_user_list()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -4098,19 +4094,19 @@ _op_vault_user_revoke()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--no-input")
     local_nonpersistent_flags+=("--no-input")
     flags+=("--permissions=")
     two_word_flags+=("--permissions")
+    local_nonpersistent_flags+=("--permissions")
     local_nonpersistent_flags+=("--permissions=")
     flags+=("--user=")
     two_word_flags+=("--user")
+    local_nonpersistent_flags+=("--user")
     local_nonpersistent_flags+=("--user=")
     flags+=("--vault=")
     two_word_flags+=("--vault")
+    local_nonpersistent_flags+=("--vault")
     local_nonpersistent_flags+=("--vault=")
     flags+=("--account=")
     two_word_flags+=("--account")
@@ -4143,7 +4139,7 @@ _op_vault_user()
     commands=()
     commands+=("grant")
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
@@ -4155,9 +4151,6 @@ _op_vault_user()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -4187,7 +4180,7 @@ _op_vault()
     commands=()
     commands+=("create")
     commands+=("delete")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("remove")
         aliashash["remove"]="delete"
         command_aliases+=("rm")
@@ -4196,17 +4189,17 @@ _op_vault()
     commands+=("edit")
     commands+=("get")
     commands+=("group")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("groups")
         aliashash["groups"]="group"
     fi
     commands+=("list")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("ls")
         aliashash["ls"]="list"
     fi
     commands+=("user")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("users")
         aliashash["users"]="user"
     fi
@@ -4217,9 +4210,6 @@ _op_vault()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -4254,9 +4244,6 @@ _op_whoami()
     flags_with_completion=()
     flags_completion=()
 
-    flags+=("--help")
-    flags+=("-h")
-    local_nonpersistent_flags+=("--help")
     flags+=("--account=")
     two_word_flags+=("--account")
     flags+=("--cache")
@@ -4285,26 +4272,27 @@ _op_root_command()
 
     commands=()
     commands+=("account")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("accounts")
         aliashash["accounts"]="account"
     fi
     commands+=("completion")
     commands+=("connect")
     commands+=("document")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("documents")
         aliashash["documents"]="document"
     fi
     commands+=("events-api")
     commands+=("group")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("groups")
         aliashash["groups"]="group"
     fi
+    commands+=("help")
     commands+=("inject")
     commands+=("item")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("items")
         aliashash["items"]="item"
     fi
@@ -4315,12 +4303,12 @@ _op_root_command()
     commands+=("signout")
     commands+=("update")
     commands+=("user")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("users")
         aliashash["users"]="user"
     fi
     commands+=("vault")
-    if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
+    if [[ -z "${BASH_VERSION:-}" || "${BASH_VERSINFO[0]:-}" -gt 3 ]]; then
         command_aliases+=("vaults")
         aliashash["vaults"]="vault"
     fi
@@ -4345,6 +4333,7 @@ _op_root_command()
     flags+=("--help")
     flags+=("-h")
     local_nonpersistent_flags+=("--help")
+    local_nonpersistent_flags+=("-h")
     flags+=("--iso-timestamps")
     flags+=("--no-color")
     flags+=("--session=")
@@ -4357,7 +4346,7 @@ _op_root_command()
 
 __start_op()
 {
-    local cur prev words cword
+    local cur prev words cword split
     declare -A flaghash 2>/dev/null || :
     declare -A aliashash 2>/dev/null || :
     if declare -F _init_completion >/dev/null 2>&1; then
@@ -4367,17 +4356,20 @@ __start_op()
     fi
 
     local c=0
+    local flag_parsing_disabled=
     local flags=()
     local two_word_flags=()
     local local_nonpersistent_flags=()
     local flags_with_completion=()
     local flags_completion=()
     local commands=("op")
+    local command_aliases=()
     local must_have_one_flag=()
     local must_have_one_noun=()
-    local has_completion_function
-    local last_command
+    local has_completion_function=""
+    local last_command=""
     local nouns=()
+    local noun_aliases=()
 
     __op_handle_word
 }

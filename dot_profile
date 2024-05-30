@@ -1,4 +1,4 @@
-unset  LC_ALL
+export LC_ALL=C.utf8
 export LANG=en_US.UTF-8
 export LANGUAGE=en
 

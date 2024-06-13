@@ -37,17 +37,19 @@ source "$HOME/.bash/prompt"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export VISUAL='vim'
-  export EDITOR='vim'
-else
-  if [[ $OSTYPE =~ darwin.* ]]; then
-    export VISUAL='mvim -f'
-  else
-    export VISUAL='vim'
-  fi
-  export EDITOR='vim'
-fi
+export VISUAL='vim'
+export EDITOR='vim'
+#if [[ -n $SSH_CONNECTION ]]; then
+#  export VISUAL='vim'
+#  export EDITOR='vim'
+#else
+#  if [[ $OSTYPE =~ darwin.* ]]; then
+#    export VISUAL='mvim -f'
+#  else
+#    export VISUAL='vim'
+#  fi
+#  export EDITOR='vim'
+#fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"

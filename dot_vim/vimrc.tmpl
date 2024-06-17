@@ -81,55 +81,31 @@ call plug#begin()
 
 " Make sure you use single quotes
 
-{{- if eq .chezmoi.os "darwin" }}
-Plug 'vimpostor/vim-lumen'
-{{- end }}
-
-Plug 'altercation/vim-colors-solarized'
-Plug 'chrisbra/Colorizer'
-"Plug 'dense-analysis/ale'
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'NLKNguyen/papercolor-theme'
+"Plug 'NLKNguyen/papercolor-theme'
 Plug 'NoahTheDuke/vim-just'
 Plug 'rust-lang/rust.vim'
-"Plug 'sheerun/vim-polyglot'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-"Plug 'vimpostor/vim-lumen'
+
+{{- if eq .chezmoi.os "darwin" }}
+Plug 'vimpostor/vim-lumen'
+Plug 'altercation/vim-colors-solarized'
+{{- else if eq .chezmoi.os "linux" }}
+Plug 'dracula/vim', { 'as': 'dracula' }
+{{- end }}
 
 call plug#end()
 
-"au BufRead,BufNewFile */.github/*/*.y{,a}ml 
-"  \ let b:ale_linters = {'yaml': ['actionlint']}
-"
-""let g:ale_rust_analyzer_executable = '/usr/local/bin/rust-analyzer'
-"let g:ale_linters = {
-"  \ 'rust': ['analyzer','rustc'] 
-"  \ }
-"let g:ale_fixers = { 
-"  \ 'rust': ['rustfmt', 'trim_whitespace', 'remove_trailing_lines'] 
-"  \ }
-
-" You can revert the settings after the call like so:
-"   filetype indent off   " Disable file-type-specific indentation
-"   syntax off            " Disable syntax highlighting
-"
+"colorscheme torte
+"colorscheme PaperColor
 
 {{- if eq .chezmoi.os "darwin" }}
-"au User LumenLight echo 'Entered light mode'
-"au User LumenDark echo 'Entered dark mode'
-{{- else if eq .chezmoi.os "linux" }}
-set background=dark
-"set background=v:termrbgresp
-"{{- end }}
-
-
-"colorscheme PaperColor
-"colorscheme torte
-"colorscheme solarized
-"let g:airline_theme='solarized'
+colorscheme solarized
+let g:airline_theme='solarized'
 let macvim_skip_colorscheme=1
-set background=dark
+{{- else if eq .chezmoi.os "linux" }}
 colorscheme dracula
 let g:airline_theme='dracula'
+set background=dark
+{{- end }}
 

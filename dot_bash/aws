@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# https://docs.aws.amazon.com/sdkref/latest/guide/feature-smart-config-defaults.html
+export AWS_DEFAULTS_MODE=standard
+
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html#cli-usage-pagination-clientside
+#export AWS_PAGER=bat
+export AWS_PAGER="less --use-color"
+#export AWS_PAGER=''
+
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html
+export AWS_DEFAULT_OUTPUT=json
+
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-using-profiles
+#export AWS_PROFILE=saml
+export AWS_PROFILE=448877188565_AWSAdministratorAccess
+
+# https://docs.aws.amazon.com/sdkref/latest/guide/feature-region.html
+export AWS_REGION=us-east-2
+

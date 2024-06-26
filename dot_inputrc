@@ -3,7 +3,7 @@
 # https://tiswww.cwru.edu/php/chet/readline/rluserman.html#SEC10
 
 set bell-style visible
-set colored-completion-prefix on
-set colored-stats on
+#set colored-completion-prefix on
+#set colored-stats on
 set editing-mode vi
 set history-size 500

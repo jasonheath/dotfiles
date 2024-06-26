@@ -214,9 +214,9 @@ export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2
 
 
 
-#bind 'set show-all-if-ambiguous on'
-#bind 'TAB:menu-complete'
-#set print-completions-horizontally on
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'
+bind 'set print-completions-horizontally on'
 
 if [[ -f .cloudinstance ]]; then
   sudo shutdown $(date --date='TZ="America/Louisville" 18:00 today' --utc +"%H:%M") --no-wall

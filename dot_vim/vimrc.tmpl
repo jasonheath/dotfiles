@@ -82,6 +82,7 @@ call plug#begin()
 " Make sure you use single quotes
 
 "Plug 'NLKNguyen/papercolor-theme'
+Plug 'morhetz/gruvbox'
 Plug 'NoahTheDuke/vim-just'
 Plug 'rust-lang/rust.vim'
 Plug 'vim-airline/vim-airline'
@@ -90,6 +91,8 @@ Plug 'vim-airline/vim-airline-themes'
 {{- if eq .chezmoi.os "darwin" }}
 Plug 'vimpostor/vim-lumen'
 Plug 'altercation/vim-colors-solarized'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+Plug 'dracula/vim', { 'as': 'dracula' }
 {{- else if eq .chezmoi.os "linux" }}
 Plug 'dracula/vim', { 'as': 'dracula' }
 {{- end }}
@@ -100,8 +103,14 @@ call plug#end()
 "colorscheme PaperColor
 
 {{- if eq .chezmoi.os "darwin" }}
-colorscheme solarized
-let g:airline_theme='solarized'
+"colorscheme solarized
+"let g:airline_theme='solarized'
+"colorscheme gruvbox
+"let g:airline_theme='gruvbox'
+colorscheme catppuccin_mocha
+"let g:airline_theme = 'catppucin_mocha'
+au User LumenLight colorscheme catppuccin_latte
+au User LumenDark colorscheme catppuccin_mocha
 let macvim_skip_colorscheme=1
 {{- else if eq .chezmoi.os "linux" }}
 colorscheme dracula

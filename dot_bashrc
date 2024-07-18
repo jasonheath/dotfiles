@@ -217,6 +217,10 @@ bind 'TAB:menu-complete'
 bind 'set print-completions-horizontally on'
 
 if [[ -f .cloudinstance ]]; then
-  sudo shutdown $(date --date='TZ="America/Louisville" 18:00 today' --utc +"%H:%M") --no-wall
+  if (( $(TZ='America/Louisville' date +%H) < 18 )); then
+    sudo shutdown $(date --date='TZ="America/Louisville" 18:00 today' --utc +"%H:%M") --no-wall
+  else
+    sudo shutdown $(date --date='TZ="America/Louisville" 23:00 today' --utc +"%H:%M") --no-wall
+  fi
 fi
 

@@ -1,9 +1,11 @@
-# .bash_profile -*- mode: sh -*-
+
+shopt -s globstar
 
 # Load login settings and environment variables
 if [[ -f $HOME/.profile ]]; then
   source "$HOME/.profile"
 fi
+
 
 # Load interactive settings
 if [[ -f $HOME/.bashrc ]]; then

@@ -1,9 +1,11 @@
 if [[ $OSTYPE =~ darwin.* ]]; then
-  export LC_ALL=en_US.UTF-8
+  export LC_ALL='en_US.UTF-8'
 else
-  export LC_ALL=C.utf8
+  export LC_ALL='C.utf8'
 fi
 
-export LANG=en_US.UTF-8
-export LANGUAGE=en
+export LANG='en_US.UTF-8'
+export LANGUAGE='en'
+
+export TZ='America/Kentucky/Louisville'
 

@@ -31,7 +31,6 @@ fi
 
 export CDPATH=".:$HOME/Development/chef:$HOME/Development/open-source:$HOME/Development/personal:$HOME/Development/progress:$HOME/Development"
 
-source "$HOME/.bash/prompt"
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -225,3 +224,4 @@ if [[ -f .cloudinstance ]]; then
   TZ='Etc/UTC' sudo shutdown ${when} --no-wall
 fi
 
+source "$HOME/.bash/prompt"

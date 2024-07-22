@@ -25,21 +25,13 @@ GIT_PS1_SHOWCONFLICTSTATE=yes
 GIT_PS1_SHOWCOLORHINTS=true
 # colored hint about the current dirty state
 
-#PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
-#PS1='[\u@\h | \t | \w$(__git_ps1 " | %s")]\n$ '
-
-
 if [[ -f ~/.cloudinstance ]]; then
   n=$(<~/.cloudinstance)
-  PS1="[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[33m\t\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ "
+  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[33m\D{%H:%M:%S %Z}\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
 else
-  PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[33m\t\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[33m\D{%H:%M:%S %Z}\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
 fi
 #PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
  #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
 #[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
 
-
-# V-- This was my Oh My Bash Prompt
-# # [jaheath@ubuntu][08:03:08][~]
-# $

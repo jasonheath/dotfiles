@@ -198,7 +198,7 @@ fi
 #---------------------------------------------------------------------
 # rust [https://www.rust-lang.org/]
 #---------------------------------------------------------------------
-if [[ -d $HOME/.cargo ]]; then
+if [[ -f $HOME/.cargo/env ]]; then
   . "$HOME/.cargo/env"
   export RA_LOG="error" # the logging level for rust analyzer
   export RUST_BACKTRACE="0"

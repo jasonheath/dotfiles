@@ -10,7 +10,7 @@ HISTCONTROL=ignoreboth
 #---------------------------------------------------------------------
 # https://brew.sh/
 #---------------------------------------------------------------------
-if [[ $OSTYPE =~ darwin.* ]]; then
+if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
 fi
@@ -151,9 +151,10 @@ fi
 #---------------------------------------------------------------------
 # go [https://go.dev/]
 #---------------------------------------------------------------------
-export GOPATH=$HOME/go
-mkdir -p $GOPATH
-export PATH=$PATH:$GOPATH/bin
+if [[ -d /usr/local/go/bin ]]; then
+  export PATH=$PATH:/usr/local/go/bin
+fi
+
 
 #---------------------------------------------------------------------
 # habitat 
@@ -208,6 +209,8 @@ fi
 #export BAT_THEME="Dracula"
 export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
 #export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
+
+[[ $(command -v batcat) ]] && alias bat=batcat
 
 
 

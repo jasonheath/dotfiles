@@ -1,29 +1,21 @@
-----------------------------------------------------------------------------------
----- ESSENTIAL SETTINGS
-----------------------------------------------------------------------------------
 --vim.opt.autowrite = true
---vim.opt.wrap = false
---vim.opt.wrapscan = false
---vim.opt.number = true
---vim.opt.expandtab = true
---vim.opt.shiftwidth = 2
---vim.opt.tabstop = 2
---vim.opt.smartindent = true
---vim.opt.visualbell = true
---vim.opt.fileformats = 'unix'
---
-----------------------------------------------------------------------------------
----- CREATURE FEATURES
-----------------------------------------------------------------------------------
 --vim.opt.confirm = true
+--vim.opt.expandtab = true
+--vim.opt.fileformats = 'unix'
 --vim.opt.ignorecase = true
---vim.opt.smartcase = true
---vim.opt.magic = true
 --vim.opt.lazyredraw = true
---vim.opt.showmatch = true
+--vim.opt.listchars = { eol = '%', tab = '<->', space = '.', multispace = '...+', nbsp = '_' }
+--vim.opt.magic = true
+--vim.opt.number = true
 --vim.opt.report = 0
+--vim.opt.shiftwidth = 2
+--vim.opt.showmatch = true
+--vim.opt.smartcase = true
+--vim.opt.smartindent = true
 --vim.opt.splitbelow = true
 --vim.opt.splitright = true
+--vim.opt.tabstop = 2
+--vim.opt.visualbell = true
 --vim.opt.warn = true
---vim.opt.listchars = { eol = '%', tab = '<->', space = '.', multispace = '...+', nbsp = '_' }
---
+--vim.opt.wrap = false
+--vim.opt.wrapscan = false

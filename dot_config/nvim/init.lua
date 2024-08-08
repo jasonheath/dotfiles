@@ -14,3 +14,4 @@ vim.opt.tabstop = 2
 vim.opt.visualbell = true
 vim.opt.wrap = false
 vim.opt.wrapscan = false
+vim.cmd [[colorscheme torte]]

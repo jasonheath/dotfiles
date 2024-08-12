@@ -220,7 +220,7 @@ bind 'set print-completions-horizontally on'
 
 if [[ -f .cloudinstance ]]; then
   H=$(TZ="America/Kentucky/Louisville" date +%H)
-  when=$(date --date='TZ="America/Kentucky/Louisville" 23:00 today' --utc +"%H:%M")
+  when=$(date --date='TZ="America/Kentucky/Louisville" 00:00 today' --utc +"%H:%M")
   if (( ${H#0} < 18 )); then
     when=$(date --date='TZ="America/Kentucky/Louisville" 18:00 today' --utc +"%H:%M")
   fi

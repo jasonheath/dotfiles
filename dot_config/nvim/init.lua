@@ -1,3 +1,4 @@
+vim.cmd.colorscheme "torte"
 vim.opt.autowrite = true
 vim.opt.confirm = true
 vim.opt.expandtab = true
@@ -12,6 +13,4 @@ vim.opt.smartcase = true
 vim.opt.smartindent = true
 vim.opt.tabstop = 2
 vim.opt.visualbell = true
-vim.opt.wrap = false
 vim.opt.wrapscan = false
-vim.cmd [[colorscheme torte]]

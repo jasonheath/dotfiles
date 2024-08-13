@@ -143,7 +143,7 @@ IFS=' '
 #---------------------------------------------------------------------
 # direnv [https://direnv.net/]
 #---------------------------------------------------------------------
-if [ -x "$(command -v foo)" ]; then
+if command -v direnv &> /dev/null; then
   eval "$(direnv hook bash)"
 fi 
 

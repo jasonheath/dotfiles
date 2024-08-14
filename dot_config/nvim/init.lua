@@ -1,5 +1,5 @@
 vim.cmd.colorscheme "torte"
-vim.g.markdown_recommended_style = 0 # https://github.com/neovim/neovim/blob/d25889ab7607918a152bab5ce4d14e54575ec11b/runtime/ftplugin/markdown.vim
+vim.g.markdown_recommended_style = 0 -- https://github.com/neovim/neovim/blob/d25889ab7607918a152bab5ce4d14e54575ec11b/runtime/ftplugin/markdown.vim
 vim.opt.autowrite = true
 vim.opt.confirm = true
 vim.opt.expandtab = true

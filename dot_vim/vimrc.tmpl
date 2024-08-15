@@ -105,12 +105,13 @@ let macvim_skip_colorscheme=1
 {{- end }}
 
 set termguicolors
-if filereadable(glob('~/.colorscheme'))
-    let g:colors_name = readfile(glob('~/.colorscheme'))[0]
-else
-  let g:colors_name = 'solarized'
-endif
+"if filereadable(glob('~/.colorscheme'))
+"    let g:colors_name = readfile(glob('~/.colorscheme'))[0]
+"else
+"  let g:colors_name = 'solarized'
+"endif
 
+colorscheme blue
 let g:airline_theme='blood_red'
 
 

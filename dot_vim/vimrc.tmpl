@@ -98,20 +98,18 @@ Plug 'vimpostor/vim-lumen'
 call plug#end()
 
 {{- if eq .chezmoi.os "darwin" }}
-au User LumenLight colorscheme catppuccin_latte
-au User LumenDark colorscheme catppuccin_mocha
+"au User LumenLight colorscheme catppuccin_latte
+"au User LumenDark colorscheme catppuccin_mocha
 let macvim_skip_colorscheme=1
 {{- else if eq .chezmoi.os "linux" }}
 {{- end }}
 
 set termguicolors
 "if filereadable(glob('~/.colorscheme'))
-"    let g:colors_name = readfile(glob('~/.colorscheme'))[0]
+"  let g:colors_name = readfile(glob('~/.colorscheme'))[0]
 "else
 "  let g:colors_name = 'solarized'
 "endif
 
-colorscheme blue
 let g:airline_theme='blood_red'
-
-
+colorscheme blue

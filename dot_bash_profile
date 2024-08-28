@@ -1,3 +1,5 @@
+chezmoi update # to pull managed files update asap
+
 # Load login settings and environment variables
 if [[ -f $HOME/.profile ]]; then
   source "$HOME/.profile"

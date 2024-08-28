@@ -1,6 +1,9 @@
 #---------------------------------------------------------------------
 # BASH configuration
 #---------------------------------------------------------------------
+
+shopt -s globstar
+
 HISTCONTROL=ignoreboth
 # ignoreboth: shorthand for ‘ignorespace’ and ‘ignoredups
 # ignorespace: lines beginning with a space are not saved 

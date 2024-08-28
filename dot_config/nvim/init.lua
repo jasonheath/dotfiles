@@ -20,7 +20,11 @@ vim.opt.tabstop = 8
 vim.opt.visualbell = true
 vim.opt.wrapscan = false
 
-require("config.lazy")
-
-vim.cmd.colorscheme "catppuccin"
+if vim.g.vscode then
+    -- VSCode extension
+else
+    -- ordinary Neovim
+  require("config.lazy")
+  vim.cmd.colorscheme "catppuccin"
+end
 

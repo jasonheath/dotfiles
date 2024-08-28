@@ -38,9 +38,15 @@ export CDPATH=".:$HOME/Development/chef:$HOME/Development/open-source:$HOME/Deve
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
 
+if command -v nvim &> /dev/null ; then
+  export EDITOR=nvim
+elif command -v vim &> /dev/null ; then
+  export EDITOR=vim
+elif command -v vi &> /dev/null ; then
+  export EDITOR=vi
+fi
+
 # Preferred editor for local and remote sessions
-export VISUAL='vim'
-export EDITOR='vim'
 #if [[ -n $SSH_CONNECTION ]]; then
 #  export VISUAL='vim'
 #  export EDITOR='vim'

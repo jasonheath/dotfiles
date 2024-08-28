@@ -185,15 +185,14 @@ fi
 # ruby [https://www.ruby-lang.org/]
 #---------------------------------------------------------------------
 if [[ -d $HOME/.rbenv ]]; then
-  # https://github.com/rbenv/ruby-build/wiki
-  # For Ruby versions 2.x–3.0:
-  # export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-  # Ruby 3.1 and above requires OpenSSL 3:
-  export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
-
-  eval "$(rbenv init - zsh)"
+  eval "$(rbenv init - --no-rehash bash)"
   RUBY_MANPATH="$(rbenv prefix)/share/man"
   export MANPATH="$RUBY_MANPATH:$MANPATH"
+  # https://github.com/rbenv/ruby-build/wiki
+  # For Ruby versions 2.x–3.0:
+  #export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+  # Ruby 3.1 and above requires OpenSSL 3:
+  #export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
 fi
 
 

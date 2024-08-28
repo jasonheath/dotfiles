@@ -95,6 +95,15 @@ local ssh_domains = {}
 --end
 config.ssh_domains = ssh_domains
 
+if string.find( wezterm.gui.get_appearance(), "Light") then
+  config.set_environment_variables = {
+    BAT_THEME = 'Catppuccin Latte'
+  }
+else
+  config.set_environment_variables = {
+    BAT_THEME = 'Catppuccin Mocha'
+  }
+end
 
 -- and finally, return the configuration to wezterm
 return config

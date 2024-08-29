@@ -1,4 +1,9 @@
-chezmoi update # to pull managed files update asap
+# if chezmoi is available on the path update or say its unavailable
+if command -v chezmoi &> /dev/null; then
+  chezmoi update # to pull managed files update asap
+else
+  echo "chezmoi unavailable"
+fi
 
 # Load login settings and environment variables
 if [[ -f $HOME/.profile ]]; then

@@ -11,38 +11,14 @@
   jlog = log --max-count=16 --oneline --graph
 [core]
   autocrlf = false
-  editor = vim --nofork
-  #editor = code --wait
   eol = lf
   pager = less -FXR
-{{- if eq .chezmoi.os "darwin" }}
 [diff]
-  guitool = vscode
-  tool = vimdiff
-  guiDefault = true
-[difftool "vscode"]
-  cmd = code --wait --diff $LOCAL $REMOTE
-{{- else if eq .chezmoi.os "linux" }}
-[diff]
-  guitool = vimdiff
-  tool = vimdiff
   wsErrorHighlight = all
-{{- end }}
 [fetch]
   prune = true
 [init]
   defaultBranch = main
-{{- if eq .chezmoi.os "darwin" }}
-[merge]
-  guitool = vscode
-  tool = vimdiff
-[mergetool "vscode"]
-  cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
-{{- else if eq .chezmoi.os "linux" }}
-[merge]
-  guitool = vimdiff
-  tool = vimdiff
-{{- end }}
 [push]
    autoSetupRemote = true
 [status]

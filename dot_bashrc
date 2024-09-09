@@ -9,6 +9,14 @@ HISTCONTROL=ignoreboth
 # ignorespace: lines beginning with a space are not saved 
 # ignoredups: lines which match the previous history entry to not be saved
 
+# IF this needs to be guarded against non-interctive shells then that
+# feels like a sign I shouldn't source .bashrc from .bash_profile
+# as I've been thinking about
+if [ -t 1 ]; then
+  bind 'set show-all-if-ambiguous on'
+  bind 'TAB:menu-complete'
+  bind 'set print-completions-horizontally on'
+fi
 
 #---------------------------------------------------------------------
 # https://brew.sh/
@@ -222,10 +230,6 @@ export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2
 [[ $(command -v batcat) ]] && alias bat=batcat
 
 
-
-bind 'set show-all-if-ambiguous on'
-bind 'TAB:menu-complete'
-bind 'set print-completions-horizontally on'
 
 if [[ -f .cloudinstance ]]; then
   H=$(TZ="America/Kentucky/Louisville" date +%H)

@@ -158,14 +158,6 @@ IFS=' '
 
 
 #---------------------------------------------------------------------
-# direnv [https://direnv.net/]
-#---------------------------------------------------------------------
-if command -v direnv &> /dev/null; then
-  eval "$(direnv hook bash)"
-fi 
-
-
-#---------------------------------------------------------------------
 # go [https://go.dev/]
 #---------------------------------------------------------------------
 if [[ -d /usr/local/go/bin ]]; then
@@ -241,3 +233,14 @@ if [[ -f .cloudinstance ]]; then
 fi
 
 source "$HOME/.bash/prompt"
+
+
+#---------------------------------------------------------------------
+# direnv [https://direnv.net/]
+# "Make sure it appears even after rvm, git-prompt and other shell
+# extensions that manipulate the prompt."
+#---------------------------------------------------------------------
+if command -v direnv &> /dev/null; then
+  eval "$(direnv hook bash)"
+fi
+

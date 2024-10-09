@@ -23,7 +23,13 @@ fi
 #---------------------------------------------------------------------
 if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
   eval "$(/usr/local/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
+  # HOMEBREW_PREFIX="$(brew --prefix)"
+  # commented this out when adding linux.
+  # if brew on macOS starts misbehaving, put it back
+fi
+
+if [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew/ ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 #---------------------------------------------------------------------

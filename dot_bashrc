@@ -110,14 +110,17 @@ alias safari='open -a /Applications/Safari.app'
 # install so here we build up a hierarchical ordering of paths and then we
 # append any preexisting PATH value to that so that our preferred executables
 # are found prior to things on the path before we intereceded
-x="$HOME/bin"
+x="."
+x="${x}:$HOME/bin"
+x="${x}:/bin:/sbin"
+x="${x}:/usr/bin:/usr/sbin"
 x="${x}:/usr/local/bin:/usr/local/sbin" # homebrew (https://brew.sh/)
 if [[ $OSTYPE =~ darwin.* ]]; then
   x="${x}:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
   x="${x}:/Applications/MacVim.app/Contents/bin"
 fi
 if [[ -n $PATH ]]; then
-  x="$x:$PATH"
+  x="$PATH:$x"
 fi
 export PATH=$x
 unset x

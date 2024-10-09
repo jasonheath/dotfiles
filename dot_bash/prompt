@@ -4,6 +4,11 @@
 # https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # depends on hombrew
 #---------------------------------------------------------------------
+
+if [[ command __git_ps1 ]]; then
+  source $(locate git-prompt.sh --limit 1)
+fi
+
 GIT_PS1_SHOWDIRTYSTATE=true
 # unstaged (*) and staged (+) changes will be shown next to the branch name
 

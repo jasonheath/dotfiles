@@ -4,9 +4,8 @@
 # https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # depends on hombrew
 #---------------------------------------------------------------------
-
-if [[ command __git_ps1 ]]; then
-  source $(locate git-prompt.sh --limit 1)
+if [[ -z $(type -t __git_ps1) ]]; then
+  source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
 fi
 
 GIT_PS1_SHOWDIRTYSTATE=true

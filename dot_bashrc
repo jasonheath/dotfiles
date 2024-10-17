@@ -162,7 +162,20 @@ IFS=' '
 #---------------------------------------------------------------------
 # AWS [https://aws.amazon.com/]
 #---------------------------------------------------------------------
-#source ~/.bash/aws
+
+# https://docs.aws.amazon.com/sdkref/latest/guide/feature-smart-config-defaults.html
+export AWS_DEFAULTS_MODE=standard
+
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html#cli-usage-pagination-clientside
+#export AWS_PAGER=bat
+export AWS_PAGER="less --use-color"
+#export AWS_PAGER=''
+
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html
+export AWS_DEFAULT_OUTPUT=json
+
+# https://docs.aws.amazon.com/sdkref/latest/guide/feature-region.html
+export AWS_REGION=us-east-2
 
 
 #---------------------------------------------------------------------
@@ -176,7 +189,6 @@ fi
 #---------------------------------------------------------------------
 # habitat 
 #---------------------------------------------------------------------
-#source $HOME/.shell/habitat.env
 export HAB_LICENSE=accept
 
 
@@ -240,7 +252,48 @@ if [[ -f .cloudinstance ]]; then
   TZ='Etc/UTC' sudo shutdown ${when} --no-wall
 fi
 
-source "$HOME/.bash/prompt"
+
+#---------------------------------------------------------------------
+# prompt management
+#---------------------------------------------------------------------
+
+if [[ -z $(type -t __git_ps1) ]]; then
+  source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+fi
+
+GIT_PS1_SHOWDIRTYSTATE=true
+# unstaged (*) and staged (+) changes will be shown next to the branch name
+
+GIT_PS1_SHOWSTASHSTATE=true
+# If something is stashed, then a '$' will be shown next to the branch name.
+
+GIT_PS1_SHOWUNTRACKEDFILES=true
+# If there're untracked files, then a '%' will be shown next to the branch name.
+
+GIT_PS1_SHOWUPSTREAM="auto verbose"
+# see the difference between HEAD and its upstream. A "<" indicates you are
+# behind, ">" indicates you are ahead, "<>" indicates you have diverged and "="
+# indicates that there is no difference. Adding "verbose" shows number of
+# commits ahead/behind (+/-) upstream
+
+GIT_PS1_SHOWCONFLICTSTATE=yes
+# The prompt will include "|CONFLICT" when there are unresolved conflicts
+
+GIT_PS1_SHOWCOLORHINTS=true
+# colored hint about the current dirty state
+
+if [[ -f ~/.cloudinstance ]]; then
+  n=$(<~/.cloudinstance)
+  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+else
+  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+fi
+#PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
+ #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
+#[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
+
+
+
 
 
 #---------------------------------------------------------------------
@@ -251,4 +304,48 @@ source "$HOME/.bash/prompt"
 if command -v direnv &> /dev/null; then
   eval "$(direnv hook bash)"
 fi
+
+
+#-----------------------------------------------------------------------
+# Previous work done around colors I'm not ready to abandon just yet
+#-----------------------------------------------------------------------
+
+# https://dev.to/ifenna__/adding-colors-to-bash-scripts-48g4
+
+# export black="\e[30m"
+# export red="\e[31m"
+# export green="\e[32m"
+# export yellow="\e[33m"
+# export blue="\e[34m"
+# export magenta="\e[35m"
+# export cyan="\e[36m"
+# export light_gray="\e[37m"
+# export gray="\e[37m"
+# export light_red="\e[91m"
+# export light_green="\e[92m"
+# export light_yellow="\e[93m"
+# export light_blue="\e[94m"
+# export light_magenta="\e[95m"
+# export light_cyan="\e[96m"
+# export white="\e[97m"
+#
+# export ec="\e[0m" # ec = endcolor
+
+#echo -e "${black}COLORED TEXT${ec} # black"
+#echo -e "${red}COLORED TEXT${ec} # red"
+#echo -e "${green}COLORED TEXT${ec} # green"
+#echo -e "${yellow}COLORED TEXT${ec} # yellow"
+#echo -e "${blue}COLORED TEXT${ec} # blue"
+#echo -e "${magenta}COLORED TEXT${ec} # magenta"
+#echo -e "${cyan}COLORED TEXT${ec} # cyan"
+#echo -e "${light_gray}COLORED TEXT${ec} # light_gray"
+#echo -e "${gray}COLORED TEXT${ec} # gray"
+#echo -e "${light_red}COLORED TEXT${ec} # light_red"
+#echo -e "${light_green}COLORED TEXT${ec} # light_green"
+#echo -e "${light_yellow}COLORED TEXT${ec} # light_yellow"
+#echo -e "${light_blue}COLORED TEXT${ec} # light_blue"
+#echo -e "${light_magenta}COLORED TEXT${ec} # light_magenta"
+#echo -e "${light_cyan}COLORED TEXT${ec} # light_cyan"
+#echo -e "${white}COLORED TEXT${ec} # white"
+
 

@@ -8,6 +8,8 @@ HISTCONTROL=ignoreboth
 # ignoreboth: shorthand for ‘ignorespace’ and ‘ignoredups
 # ignorespace: lines beginning with a space are not saved 
 # ignoredups: lines which match the previous history entry to not be saved
+HISTFILESIZE=2048 #~4x from a default of 500
+shopt -s histappend
 
 # IF this needs to be guarded against non-interctive shells then that
 # feels like a sign I shouldn't source .bashrc from .bash_profile

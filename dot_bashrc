@@ -20,6 +20,12 @@ if [ -t 1 ]; then
   bind 'set print-completions-horizontally on'
 fi
 
+
+# ~/.secretish is a place to put envars that might not be "real secrets" but
+# are still probably best left out of source control repositories
+[[ -f ~/.secretish ]] && source ~/.secretish
+
+
 #---------------------------------------------------------------------
 # https://brew.sh/
 #---------------------------------------------------------------------
@@ -43,9 +49,6 @@ fi
 #  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
 #fi
 
-#---------------------------------------------------------------------
-# https://code.visualstudio.com/docs/terminal/shell-integration
-#---------------------------------------------------------------------
 
 export CDPATH=".:$HOME/Development/chef:$HOME/Development/open-source:$HOME/Development/personal:$HOME/Development/progress:$HOME/Development"
 
@@ -166,11 +169,11 @@ IFS=' '
 #---------------------------------------------------------------------
 
 # https://docs.aws.amazon.com/sdkref/latest/guide/feature-smart-config-defaults.html
-export AWS_DEFAULTS_MODE=standard
+export AWS_DEFAULTS_MODE="standard"
 
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html#cli-usage-pagination-clientside
 #export AWS_PAGER=bat
-export AWS_PAGER="less --use-color"
+#export AWS_PAGER="less --use-color"
 #export AWS_PAGER=''
 
 # https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html

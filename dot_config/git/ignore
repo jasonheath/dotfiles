@@ -1,7 +1,7 @@
 # Just say no to log files, K?
 *.log
 
-# Things I particularly care about not checking in
+# Things peculiar to me
 *.jah
 jah*
 Jah*
@@ -11,8 +11,11 @@ Justfile
 justfile
 .justfile
 *.http
-
 *.pub
+
+# Odds & Ends from Progress Chef repos
+# on-prem-builder
+scripts/pg_pass.toml 
 
 
 #-----------------------------------------------------------------------

@@ -10,12 +10,15 @@ JAH*
 Justfile
 justfile
 .justfile
+*.just
 *.http
 *.pub
 
 # Odds & Ends from Progress Chef repos
 # on-prem-builder
 scripts/pg_pass.toml 
+package_list_x86_64-linux.txt
+package_list_x86_64-windows.txt
 
 
 #-----------------------------------------------------------------------

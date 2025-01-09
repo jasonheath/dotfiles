@@ -39,6 +39,29 @@ if [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew/ ]]; then
   HOMEBREW_PREFIX="$(brew --prefix)"
 fi
 
+
+#---------------------------------------------------------------------
+# PKG_CONFIG_PATH mgmt
+#---------------------------------------------------------------------
+if [ -f /usr/bin/pkg-config ]; then
+  sys_pkg_config=$(/usr/bin/pkg-config --variable pc_path pkg-config)
+  if [ -v PKG_CONFIG_PATH ]; then
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$sys_pkg_config"
+  else
+    PKG_CONFIG_PATH="$sys_pkg_config"
+  fi
+fi
+
+if [ -f $(brew --prefix)/bin/pkg-config ]; then
+  brew_pkg_config=$($(brew --prefix)/bin/pkg-config --variable pc_path pkg-config)
+  if [ -v PKG_CONFIG_PATH ]; then
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$brew_pkg_config"
+  else
+    PKG_CONFIG_PATH="$brew_pkg_config"
+  fi
+fi
+export PKG_CONFIG_PATH
+
 #---------------------------------------------------------------------
 # https://github.com/scop/bash-completion
 #---------------------------------------------------------------------

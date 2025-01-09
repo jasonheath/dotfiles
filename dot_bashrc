@@ -73,7 +73,7 @@ export PKG_CONFIG_PATH
 #fi
 
 
-export CDPATH=".:$HOME/Development/chef:$HOME/Development/open-source:$HOME/Development/personal:$HOME/Development/progress:$HOME/Development"
+export CDPATH=".:$HOME/Development"
 
 
 # User configuration

@@ -242,6 +242,13 @@ export AWS_REGION=us-east-2
 
 
 #---------------------------------------------------------------------
+# FZF [https://github.com/junegunn/fzf]
+#---------------------------------------------------------------------
+export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
+#export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
+
+
+#---------------------------------------------------------------------
 # go [https://go.dev/]
 #---------------------------------------------------------------------
 if [[ -d /usr/local/go/bin ]]; then
@@ -299,13 +306,6 @@ if [[ -f $HOME/.cargo/env ]]; then
   export RUST_BACKTRACE="0"
   #export RUST_LOG="info,manager::file_watcher=trace"
 fi
-
-
-#---------------------------------------------------------------------
-# FZF [https://github.com/junegunn/fzf]
-#---------------------------------------------------------------------
-export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
-#export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
 
 
 #---------------------------------------------------------------------

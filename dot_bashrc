@@ -75,29 +75,6 @@ alias safari='open -a /Applications/Safari.app'
 
 
 #---------------------------------------------------------------------
-# PKG_CONFIG_PATH mgmt
-#---------------------------------------------------------------------
-if [ -f /usr/bin/pkg-config ]; then
-  sys_pkg_config=$(/usr/bin/pkg-config --variable pc_path pkg-config)
-  if [ -v PKG_CONFIG_PATH ]; then
-    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$sys_pkg_config"
-  else
-    PKG_CONFIG_PATH="$sys_pkg_config"
-  fi
-fi
-
-if [ -f $(brew --prefix)/bin/pkg-config ]; then
-  brew_pkg_config=$($(brew --prefix)/bin/pkg-config --variable pc_path pkg-config)
-  if [ -v PKG_CONFIG_PATH ]; then
-    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$brew_pkg_config"
-  else
-    PKG_CONFIG_PATH="$brew_pkg_config"
-  fi
-fi
-export PKG_CONFIG_PATH
-
-
-#---------------------------------------------------------------------
 # PATH management
 #---------------------------------------------------------------------
 # This path mgmt is focused on adding things to the PATH that I've wanted to
@@ -163,6 +140,49 @@ fi
 
 
 #---------------------------------------------------------------------
+# https://brew.sh/
+#---------------------------------------------------------------------
+if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+  HOMEBREW_PREFIX="$(brew --prefix)"
+fi
+
+if [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew/ ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  HOMEBREW_PREFIX="$(brew --prefix)"
+fi
+
+[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+#if [[ $OSTYPE =~ darwin.* ]]; then
+#  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+#else
+#  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+#fi
+
+
+#---------------------------------------------------------------------
+# PKG_CONFIG_PATH mgmt
+#---------------------------------------------------------------------
+if [ -f /usr/bin/pkg-config ]; then
+  sys_pkg_config=$(/usr/bin/pkg-config --variable pc_path pkg-config)
+  if [ -v PKG_CONFIG_PATH ]; then
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$sys_pkg_config"
+  else
+    PKG_CONFIG_PATH="$sys_pkg_config"
+  fi
+fi
+
+if [ -f $(brew --prefix)/bin/pkg-config ]; then
+  brew_pkg_config=$($(brew --prefix)/bin/pkg-config --variable pc_path pkg-config)
+  if [ -v PKG_CONFIG_PATH ]; then
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$brew_pkg_config"
+  else
+    PKG_CONFIG_PATH="$brew_pkg_config"
+  fi
+fi
+export PKG_CONFIG_PATH
+
+#---------------------------------------------------------------------
 # prompt management
 #---------------------------------------------------------------------
 if [[ -z $(type -t __git_ps1) ]]; then
@@ -199,27 +219,6 @@ fi
 #PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
  #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
 #[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
-
-
-#---------------------------------------------------------------------
-# https://brew.sh/
-#---------------------------------------------------------------------
-if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
-  eval "$(/usr/local/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
-fi
-
-if [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew/ ]]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
-fi
-
-[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-#if [[ $OSTYPE =~ darwin.* ]]; then
-#  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-#else
-#  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
-#fi
 
 
 #---------------------------------------------------------------------
@@ -278,6 +277,12 @@ if [[ -d $HOME/.nvm ]]; then
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # load nvm
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # load bash_completion
 fi
+
+
+#---------------------------------------------------------------------
+# PostgreSQL [https://www.postgresql.org/docs/current/index.html]
+#---------------------------------------------------------------------
+export PATH="/usr/lib/postgresql/17/bin:$PATH"
 
 
 #---------------------------------------------------------------------

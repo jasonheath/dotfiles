@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------
-# BASH configuration
+# Bash configuration
 #---------------------------------------------------------------------
 
 shopt -s globstar
@@ -11,7 +11,7 @@ HISTCONTROL=ignoreboth
 HISTFILESIZE=2048 #~4x from a default of 500
 shopt -s histappend
 
-# IF this needs to be guarded against non-interctive shells then that
+# If this needs to be guarded against non-interctive shells then that
 # feels like a sign I shouldn't source .bashrc from .bash_profile
 # as I've been thinking about
 if [ -t 1 ]; then
@@ -20,24 +20,58 @@ if [ -t 1 ]; then
   bind 'set print-completions-horizontally on'
 fi
 
+export CDPATH=".:$HOME/Development"
 
-# ~/.secretish is a place to put envars that might not be "real secrets" but
-# are still probably best left out of source control repositories
-[[ -f ~/.secretish ]] && source ~/.secretish
+# export MANPATH="/usr/local/man:$MANPATH"
 
-
-#---------------------------------------------------------------------
-# https://brew.sh/
-#---------------------------------------------------------------------
-if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
-  eval "$(/usr/local/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
+if command -v vim &> /dev/null ; then
+  export EDITOR=vim
+elif command -v nvim &> /dev/null ; then
+  export EDITOR=nvim
+elif command -v vi &> /dev/null ; then
+  export EDITOR=vi
 fi
 
-if [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew/ ]]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
+# Preferred editor for local and remote sessions
+#if [[ -n $SSH_CONNECTION ]]; then
+#  export VISUAL='vim'
+#  export EDITOR='vim'
+#else
+#  if [[ $OSTYPE =~ darwin.* ]]; then
+#    export VISUAL='mvim -f'
+#  else
+#    export VISUAL='vim'
+#  fi
+#  export EDITOR='vim'
+#fi
+
+
+alias rm='rm -i'
+alias cp='cp -i'
+
+# Handle color between macOS and Linux. Will probably bite me on BSD one day...
+if [[ $OSTYPE =~ darwin.* ]]; then
+  alias  ls='ls   -FG'
+  alias  l1='ls  -1FG'
+  alias  ll='ls   -FGhl'
+  alias  la='ls  -AFG'
+  alias lal='ls  -AFGhl'
+  alias la1='ls -1AFGh'
+else
+  alias  ls='ls   -F --color=auto'
+  alias  l1='ls  -1F --color=auto'
+  alias  ll='ls   -Fhl --color=auto'
+  alias  la='ls  -AF --color=auto'
+  alias lal='ls  -AFhl --color=auto'
+  alias la1='ls -1AFh --color=auto'
 fi
+alias ls-by-time='find . -type f -print0 | xargs -0 ls -tlr'
+
+alias just='just --unstable'
+
+alias chrome='open -a /Applications/Google\ Chrome.app'
+alias firefox='open -a /Applications/Firefox.app'
+alias safari='open -a /Applications/Safari.app'
 
 
 #---------------------------------------------------------------------
@@ -62,79 +96,6 @@ if [ -f $(brew --prefix)/bin/pkg-config ]; then
 fi
 export PKG_CONFIG_PATH
 
-#---------------------------------------------------------------------
-# https://github.com/scop/bash-completion
-#---------------------------------------------------------------------
-[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-#if [[ $OSTYPE =~ darwin.* ]]; then
-#  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-#else 
-#  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
-#fi
-
-
-export CDPATH=".:$HOME/Development"
-
-
-# User configuration
-# export MANPATH="/usr/local/man:$MANPATH"
-
-if command -v nvim &> /dev/null ; then
-  export EDITOR=nvim
-elif command -v vim &> /dev/null ; then
-  export EDITOR=vim
-elif command -v vi &> /dev/null ; then
-  export EDITOR=vi
-fi
-
-# Preferred editor for local and remote sessions
-#if [[ -n $SSH_CONNECTION ]]; then
-#  export VISUAL='vim'
-#  export EDITOR='vim'
-#else
-#  if [[ $OSTYPE =~ darwin.* ]]; then
-#    export VISUAL='mvim -f'
-#  else
-#    export VISUAL='vim'
-#  fi
-#  export EDITOR='vim'
-#fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-#---------------------------------------------------------------------
-# aliases
-#---------------------------------------------------------------------
-alias rm='rm -i'
-alias cp='cp -i'
-
-# Handle color between macOS and Linux. Will probably bite me on BSD one day...
-if [[ $OSTYPE =~ darwin.* ]]; then
-  alias  ls='ls   -FG'
-  alias  l1='ls  -1FG'
-  alias  ll='ls   -FGhl'
-  alias  la='ls  -AFG'
-  alias lal='ls  -AFGhl'
-  alias la1='ls -1AFGh'
-else 
-  alias  ls='ls   -F --color=auto'
-  alias  l1='ls  -1F --color=auto'
-  alias  ll='ls   -Fhl --color=auto'
-  alias  la='ls  -AF --color=auto'
-  alias lal='ls  -AFhl --color=auto'
-  alias la1='ls -1AFh --color=auto'
-fi
-alias ls-by-time='find . -type f -print0 | xargs -0 ls -tlr'
-
-alias just='just --unstable'
-
-alias chrome='open -a /Applications/Google\ Chrome.app'
-alias firefox='open -a /Applications/Firefox.app'
-alias safari='open -a /Applications/Safari.app'
 
 #---------------------------------------------------------------------
 # PATH management
@@ -143,11 +104,10 @@ alias safari='open -a /Applications/Safari.app'
 # install so here we build up a hierarchical ordering of paths and then we
 # append any preexisting PATH value to that so that our preferred executables
 # are found prior to things on the path before we intereceded
-x="."
 x="${x}:$HOME/bin"
 x="${x}:/bin:/sbin"
 x="${x}:/usr/bin:/usr/sbin"
-x="${x}:/usr/local/bin:/usr/local/sbin" # homebrew (https://brew.sh/)
+x="${x}:/usr/local/bin:/usr/local/sbin"
 if [[ $OSTYPE =~ darwin.* ]]; then
   x="${x}:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
   x="${x}:/Applications/MacVim.app/Contents/bin"
@@ -159,32 +119,107 @@ export PATH=$x
 unset x
 
 # Now dedup the path
-#echo "OLD PATH: $PATH"
 seen=()
-IFS=':' 
+IFS=':'
 for value in ${PATH[@]}
-do 
-  #echo " SEEN: ${seen[@]}"
-  #echo "VALUE: $value"
+do
   if ! [[ "${seen[@]}" =~ [[:space:]]"$value"[[:space:]] ]]; then
-  # echo "KEEPING $value"
     seen+=("$value")
-  #else
-  # echo "DROPPED $value"
   fi
 done
 
 dedupped_path=''
 for value in "${seen[@]}"
-do 
+do
   dedupped_path+=$value
   dedupped_path+=':'
 done
-#echo "NEW PATH: ${dedupped_path%?}"
 export PATH=${dedupped_path%?}
 unset seen
 unset dedupped_path
-IFS=' ' 
+IFS=' '
+
+
+#---------------------------------------------------------------------
+# My cobbled keep it out of source control environment variable file
+#---------------------------------------------------------------------
+# ~/.secretish is a place to put envars that might not be "real secrets"
+# but are still probably best left out of source control repositories
+[[ -f ~/.secretish ]] && source ~/.secretish
+
+
+#---------------------------------------------------------------------
+# My cobbled .cloudinstance management
+# interacts with prompt so keep this above prompt management
+#---------------------------------------------------------------------
+if [[ -f .cloudinstance ]]; then
+  H=$(TZ="America/Kentucky/Louisville" date +%H)
+  when=$(date --date='TZ="America/Kentucky/Louisville" 00:00 today' --utc +"%H:%M")
+  if (( ${H#0} < 18 )); then
+    when=$(date --date='TZ="America/Kentucky/Louisville" 18:00 today' --utc +"%H:%M")
+  fi
+  TZ='Etc/UTC' sudo shutdown ${when} --no-wall
+fi
+
+
+#---------------------------------------------------------------------
+# prompt management
+#---------------------------------------------------------------------
+if [[ -z $(type -t __git_ps1) ]]; then
+  source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+fi
+
+GIT_PS1_SHOWDIRTYSTATE=true
+# unstaged (*) and staged (+) changes will be shown next to the branch name
+
+GIT_PS1_SHOWSTASHSTATE=true
+# If something is stashed, then a '$' will be shown next to the branch name.
+
+GIT_PS1_SHOWUNTRACKEDFILES=true
+# If there're untracked files, then a '%' will be shown next to the branch name.
+
+GIT_PS1_SHOWUPSTREAM="auto verbose"
+# see the difference between HEAD and its upstream. A "<" indicates you are
+# behind, ">" indicates you are ahead, "<>" indicates you have diverged and "="
+# indicates that there is no difference. Adding "verbose" shows number of
+# commits ahead/behind (+/-) upstream
+
+GIT_PS1_SHOWCONFLICTSTATE=yes
+# The prompt will include "|CONFLICT" when there are unresolved conflicts
+
+GIT_PS1_SHOWCOLORHINTS=true
+# colored hint about the current dirty state
+
+if [[ -f ~/.cloudinstance ]]; then
+  n=$(<~/.cloudinstance)
+  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+else
+  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+fi
+#PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
+ #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
+#[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
+
+
+#---------------------------------------------------------------------
+# https://brew.sh/
+#---------------------------------------------------------------------
+if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+  HOMEBREW_PREFIX="$(brew --prefix)"
+fi
+
+if [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew/ ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  HOMEBREW_PREFIX="$(brew --prefix)"
+fi
+
+[[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+#if [[ $OSTYPE =~ darwin.* ]]; then
+#  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+#else
+#  [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+#fi
 
 
 #---------------------------------------------------------------------
@@ -265,65 +300,12 @@ if [[ -f $HOME/.cargo/env ]]; then
   #export RUST_LOG="info,manager::file_watcher=trace"
 fi
 
-#export BAT_THEME="Dracula"
+
+#---------------------------------------------------------------------
+# FZF [https://github.com/junegunn/fzf]
+#---------------------------------------------------------------------
 export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
 #export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
-
-[[ $(command -v batcat) ]] && alias bat=batcat
-
-
-
-if [[ -f .cloudinstance ]]; then
-  H=$(TZ="America/Kentucky/Louisville" date +%H)
-  when=$(date --date='TZ="America/Kentucky/Louisville" 00:00 today' --utc +"%H:%M")
-  if (( ${H#0} < 18 )); then
-    when=$(date --date='TZ="America/Kentucky/Louisville" 18:00 today' --utc +"%H:%M")
-  fi
-  TZ='Etc/UTC' sudo shutdown ${when} --no-wall
-fi
-
-
-#---------------------------------------------------------------------
-# prompt management
-#---------------------------------------------------------------------
-
-if [[ -z $(type -t __git_ps1) ]]; then
-  source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
-fi
-
-GIT_PS1_SHOWDIRTYSTATE=true
-# unstaged (*) and staged (+) changes will be shown next to the branch name
-
-GIT_PS1_SHOWSTASHSTATE=true
-# If something is stashed, then a '$' will be shown next to the branch name.
-
-GIT_PS1_SHOWUNTRACKEDFILES=true
-# If there're untracked files, then a '%' will be shown next to the branch name.
-
-GIT_PS1_SHOWUPSTREAM="auto verbose"
-# see the difference between HEAD and its upstream. A "<" indicates you are
-# behind, ">" indicates you are ahead, "<>" indicates you have diverged and "="
-# indicates that there is no difference. Adding "verbose" shows number of
-# commits ahead/behind (+/-) upstream
-
-GIT_PS1_SHOWCONFLICTSTATE=yes
-# The prompt will include "|CONFLICT" when there are unresolved conflicts
-
-GIT_PS1_SHOWCOLORHINTS=true
-# colored hint about the current dirty state
-
-if [[ -f ~/.cloudinstance ]]; then
-  n=$(<~/.cloudinstance)
-  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
-else
-  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
-fi
-#PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
- #PROMPT_COMMAND='__git_ps1 "[\u@\h | \w | \t] "\\\$ "'
-#[jaheath@C02G2566MD6R | 13:18:28 | ~/Development/progress/jahtomate | (main|u=)]
-
-
-
 
 
 #---------------------------------------------------------------------
@@ -334,48 +316,4 @@ fi
 if command -v direnv &> /dev/null; then
   eval "$(direnv hook bash)"
 fi
-
-
-#-----------------------------------------------------------------------
-# Previous work done around colors I'm not ready to abandon just yet
-#-----------------------------------------------------------------------
-
-# https://dev.to/ifenna__/adding-colors-to-bash-scripts-48g4
-
-# export black="\e[30m"
-# export red="\e[31m"
-# export green="\e[32m"
-# export yellow="\e[33m"
-# export blue="\e[34m"
-# export magenta="\e[35m"
-# export cyan="\e[36m"
-# export light_gray="\e[37m"
-# export gray="\e[37m"
-# export light_red="\e[91m"
-# export light_green="\e[92m"
-# export light_yellow="\e[93m"
-# export light_blue="\e[94m"
-# export light_magenta="\e[95m"
-# export light_cyan="\e[96m"
-# export white="\e[97m"
-#
-# export ec="\e[0m" # ec = endcolor
-
-#echo -e "${black}COLORED TEXT${ec} # black"
-#echo -e "${red}COLORED TEXT${ec} # red"
-#echo -e "${green}COLORED TEXT${ec} # green"
-#echo -e "${yellow}COLORED TEXT${ec} # yellow"
-#echo -e "${blue}COLORED TEXT${ec} # blue"
-#echo -e "${magenta}COLORED TEXT${ec} # magenta"
-#echo -e "${cyan}COLORED TEXT${ec} # cyan"
-#echo -e "${light_gray}COLORED TEXT${ec} # light_gray"
-#echo -e "${gray}COLORED TEXT${ec} # gray"
-#echo -e "${light_red}COLORED TEXT${ec} # light_red"
-#echo -e "${light_green}COLORED TEXT${ec} # light_green"
-#echo -e "${light_yellow}COLORED TEXT${ec} # light_yellow"
-#echo -e "${light_blue}COLORED TEXT${ec} # light_blue"
-#echo -e "${light_magenta}COLORED TEXT${ec} # light_magenta"
-#echo -e "${light_cyan}COLORED TEXT${ec} # light_cyan"
-#echo -e "${white}COLORED TEXT${ec} # white"
-
 

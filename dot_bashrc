@@ -81,7 +81,7 @@ alias safari='open -a /Applications/Safari.app'
 # install so here we build up a hierarchical ordering of paths and then we
 # append any preexisting PATH value to that so that our preferred executables
 # are found prior to things on the path before we intereceded
-x="${x}:$HOME/bin"
+x="${x}$HOME/bin"
 x="${x}:/bin:/sbin"
 x="${x}:/usr/bin:/usr/sbin"
 x="${x}:/usr/local/bin:/usr/local/sbin"
@@ -282,7 +282,9 @@ fi
 #---------------------------------------------------------------------
 # PostgreSQL [https://www.postgresql.org/docs/current/index.html]
 #---------------------------------------------------------------------
-export PATH="/usr/lib/postgresql/17/bin:$PATH"
+if [[ -d /usr/lib/postgresql/17/bin ]]; then
+  export PATH="/usr/lib/postgresql/17/bin:$PATH"
+fi
 
 
 #---------------------------------------------------------------------

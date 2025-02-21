@@ -24,6 +24,12 @@ end
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
+-- How many lines of scrollback you want to retain per tab
+--config.scrollback_lines = 3500
+--config.scrollback_lines = 65536
+config.scrollback_lines = 131072
+-- 2^17 = 131,072
+
 -- inactive pane dimming
 config.inactive_pane_hsb = {
   saturation = 0.90,

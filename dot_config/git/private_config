@@ -1,0 +1,28 @@
+[alias]
+  jlog = log --max-count=16 --oneline --graph --decorate
+[core]
+  autocrlf = false
+  eol = lf
+  pager = less -FXR
+[diff]
+  wsErrorHighlight = all
+[fetch]
+  prune = true
+[init]
+  defaultBranch = main
+[push]
+   autoSetupRemote = true
+[status]
+  aheadBehind = true
+  branch = true
+  hints = true
+  relativePaths = false
+[user]
+  name = Jason Heath
+  email = jh@jasonheath.com
+[includeIf "gitdir/i:~/Development/open-source/"]
+	path = ~/.config/git/config.open-source
+[includeIf "gitdir/i:~/Development/personal/"]
+	path = ~/.config/git/config.personal
+[includeIf "gitdir/i:~/Development/progress/"]
+	path = ~/.config/git/config.progress

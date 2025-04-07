@@ -1,0 +1,6 @@
+[user]
+  email = jason.heath@progress.com
+[branch "main"]
+  pushRemote = no_push
+[branch "master"]
+  pushRemote = no_push

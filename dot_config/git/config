@@ -1,5 +1,8 @@
 [alias]
-  jlog = log --max-count=16 --oneline --graph --decorate
+  jlog = log --oneline --graph --decorate
+  dlog = log --date=short --format=format:"%h%x09%ad%x09%s%x09(%an)"
+  hlog = ! git dlog | grep -v -e '(dependabot\\[bot\\])' -e '(Chef Expeditor)' | less
+  #hlog = ! git log --date=short --format=format:'%h%x09%ad%x09%s%x09(%an)' | grep -v -e '(dependabot\\[bot\\])' -e '(Chef Expeditor)' | less
 [core]
   autocrlf = false
   eol = lf

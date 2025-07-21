@@ -29,3 +29,5 @@
 	path = ~/.config/git/config.personal
 [includeIf "gitdir/i:~/Development/progress/"]
 	path = ~/.config/git/config.progress
+[pull]
+	ff = only

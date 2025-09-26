@@ -8,8 +8,9 @@
 #--theme="Catppuccin Latte"
 #--theme="Catppuccin Mocha"
 #--theme="Solarized (light)"
+#--theme-light="Coldark-Cold"
 --theme=auto:always
---theme-light="Coldark-Cold"
+--theme-light="Catppuccin Latte"
 --theme-dark="Catppuccin Mocha"
 
 # Enable this to use italic text on the terminal. This is not supported on all

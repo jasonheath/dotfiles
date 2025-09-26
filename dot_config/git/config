@@ -3,16 +3,28 @@
   dlog = log --date=short --format=format:"%h%x09%ad%x09%s%x09(%an)"
   hlog = ! git dlog | grep -v -e '(dependabot\\[bot\\])' -e '(Chef Expeditor)' | less
   #hlog = ! git log --date=short --format=format:'%h%x09%ad%x09%s%x09(%an)' | grep -v -e '(dependabot\\[bot\\])' -e '(Chef Expeditor)' | less
+  skip = update-index --skip-worktree
+  unskip = update-index --no-skip-worktree
+  skip-list = ! git ls-files -v | grep -P '^S'
 [core]
   autocrlf = false
   eol = lf
-  pager = less -FXR
+  #pager = less -FXR
+  pager = delta
+[delta]
+    navigate = true  # use n and N to move between diff sections
 [diff]
   wsErrorHighlight = all
 [fetch]
   prune = true
 [init]
   defaultBranch = main
+[interactive]
+    diffFilter = delta --color-only
+[merge]
+    conflictStyle = zdiff3
+[pull]
+	ff = only
 [push]
    autoSetupRemote = true
 [status]
@@ -29,5 +41,3 @@
 	path = ~/.config/git/config.personal
 [includeIf "gitdir/i:~/Development/progress/"]
 	path = ~/.config/git/config.progress
-[pull]
-	ff = only

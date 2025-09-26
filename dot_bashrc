@@ -46,8 +46,9 @@ fi
 #fi
 
 
-alias rm='rm -i'
 alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
 
 # Handle color between macOS and Linux. Will probably bite me on BSD one day...
 if [[ $OSTYPE =~ darwin.* ]]; then

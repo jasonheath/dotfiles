@@ -5,7 +5,7 @@
   #hlog = ! git log --date=short --format=format:'%h%x09%ad%x09%s%x09(%an)' | grep -v -e '(dependabot\\[bot\\])' -e '(Chef Expeditor)' | less
   skip = update-index --skip-worktree
   unskip = update-index --no-skip-worktree
-  skip-list = ! git ls-files -v | grep -P '^S'
+  skip-list = ! git ls-files -v | grep -E '^S'
 [core]
   autocrlf = false
   eol = lf

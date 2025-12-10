@@ -6,7 +6,7 @@ export TZ='America/Kentucky/Louisville'
 
 export PAGER=less
 export LESS='-SRXF'
-if command -v bat; then 
+if command -v bat &> /dev/null; then 
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
 

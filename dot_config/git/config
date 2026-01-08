@@ -1,4 +1,5 @@
 [alias]
+  fixup = "!f() { git commit --fixup=${1}; }; f"
   fpush = push --force-with-lease
   jlog = log --oneline --graph --decorate --max-count=16
   dlog = log --date=short --format=format:"%h%x09%ad%x09%s%x09(%an)"

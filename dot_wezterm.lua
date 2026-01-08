@@ -67,8 +67,8 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 
 config.keys = {
-    { key = '\"', mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' } },
-    { key = '=', mods = 'SHIFT|ALT|CTRL', action = act.SplitVertical{ domain =  'CurrentPaneDomain' } },
+  { key = '|', mods = 'CTRL|SHIFT|ALT', action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' } },
+  { key = '_', mods = 'CTRL|SHIFT|ALT', action = act.SplitVertical{ domain =  'CurrentPaneDomain' } },
 }
 
 -- JAH: From here to config.ssh_domains = ssh_domains cleans up the shell menu

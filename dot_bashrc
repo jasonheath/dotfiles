@@ -262,9 +262,9 @@ export AWS_REGION=us-east-2
 #---------------------------------------------------------------------
 # github cli (https://cli.github.com/)
 ##---------------------------------------------------------------------
-if type -P gh >/dev/null; then 
-  eval "$(gh copilot alias -- bash)"
-fi
+# if type -P gh >/dev/null; then 
+#   eval "$(gh copilot alias -- bash)"
+# fi
 
 #---------------------------------------------------------------------
 # go [https://go.dev/]

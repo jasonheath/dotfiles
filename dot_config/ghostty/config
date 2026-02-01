@@ -1,0 +1,6 @@
+font-size = 16
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+

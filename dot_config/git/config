@@ -29,6 +29,8 @@
 	ff = only
 [push]
    autoSetupRemote = true
+[rebase]
+	autoSquash = true
 [status]
   aheadBehind = true
   branch = true
@@ -41,7 +43,3 @@
 	path = ~/.config/git/config.open-source
 [includeIf "gitdir/i:~/Development/personal/"]
 	path = ~/.config/git/config.personal
-[includeIf "gitdir/i:~/Development/progress/"]
-	path = ~/.config/git/config.progress
-[rebase]
-	autoSquash = true

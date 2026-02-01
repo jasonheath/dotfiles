@@ -20,14 +20,14 @@ if [ -t 1 ]; then
   bind 'set print-completions-horizontally on'
 fi
 
-export CDPATH=".:$HOME/Development"
+export CDPATH=".:$HOME/Development/:$HOME/Development/open-source"
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-if command -v vim &> /dev/null ; then
-  export EDITOR=vim
-elif command -v nvim &> /dev/null ; then
+if command -v nvim &> /dev/null ; then
   export EDITOR=nvim
+elif command -v vim &> /dev/null ; then
+  export EDITOR=vim
 elif command -v vi &> /dev/null ; then
   export EDITOR=vi
 fi
@@ -150,8 +150,8 @@ fi
 #---------------------------------------------------------------------
 # https://brew.sh/
 #---------------------------------------------------------------------
-if [[ $OSTYPE =~ darwin.* ]] && [[ $(command -v brew) ]]; then
-  eval "$(/usr/local/bin/brew shellenv)"
+if [[ $OSTYPE =~ darwin.* ]] && [[ -d /opt/homebrew/ ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
 fi
 
@@ -274,19 +274,6 @@ if [[ -d /usr/local/go/bin ]]; then
 fi
 
 
-#---------------------------------------------------------------------
-# habitat 
-#---------------------------------------------------------------------
-#export HAB_LICENSE=accept
-
-
-#---------------------------------------------------------------------
-# kubernetes [https://kubernetes.io/]
-#---------------------------------------------------------------------
-if [[ -d "$HOME/.krew" ]]; then
-  export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-fi 
-
 
 #---------------------------------------------------------------------
 # nvm [https://nvm.sh]
@@ -328,9 +315,6 @@ fi
 #---------------------------------------------------------------------
 if [[ -f $HOME/.cargo/env ]]; then
   . "$HOME/.cargo/env"
-  export RA_LOG="error" # the logging level for rust analyzer
-  export RUST_BACKTRACE="0"
-  #export RUST_LOG="info,manager::file_watcher=trace"
 fi
 
 

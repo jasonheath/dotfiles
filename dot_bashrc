@@ -214,7 +214,7 @@ export AWS_REGION=us-east-2
 # ruby  [https://www.ruby-lang.org/]
 # rbenv [https://rbenv.org/]
 #-------------------------------------------------------------------------------
-if command -v rbenv &> /bin/null; then
+if command -v rbenv &> /dev/null; then
   eval "$(rbenv init - --no-rehash bash)"
   RUBY_MANPATH="$(rbenv prefix)/share/man"
   if [[ -n "$MANPATH" ]]; then 

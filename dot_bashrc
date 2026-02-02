@@ -210,18 +210,16 @@ export AWS_REGION=us-east-2
 
 
 #-------------------------------------------------------------------------------
-# ruby [https://www.ruby-lang.org/]
+# ruby  [https://www.ruby-lang.org/]
+# rbenv [https://rbenv.org/]
 #-------------------------------------------------------------------------------
-if [[ -d $HOME/.rbenv ]]; then
+if command -v rbenv &> /bin/null; then
   eval "$(rbenv init - --no-rehash bash)"
   RUBY_MANPATH="$(rbenv prefix)/share/man"
-  export MANPATH="$RUBY_MANPATH:$MANPATH"
-  if [ bc <<< "3.1 <= $(ruby --version | grep -e 'ruby [[:digit:]]\.[[:digit:]]' | cut -d' '  -f 2 )" ]; then
-    # Ruby 3.1 and above requires OpenSSL 3 (https://github.com/rbenv/ruby-build/wiki)
-    export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
+  if [[ -n "$MANPATH" ]]; then 
+    export MANPATH="$RUBY_MANPATH:$MANPATH"
   else
-    # For Ruby versions 2.x–3.0 (https://github.com/rbenv/ruby-build/wiki)
-    export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+    export MANPATH="$RUBY_MANPATH"
   fi
 fi
 

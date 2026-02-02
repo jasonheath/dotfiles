@@ -149,39 +149,42 @@ fi
 
 
 #-------------------------------------------------------------------------------
-# prompt management
+# Starship (https://starship.rs/)
+# and PS1 fallback
 #-------------------------------------------------------------------------------
-if [[ -z $(type -t __git_ps1) ]]; then
-  source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
-fi
-
-GIT_PS1_SHOWDIRTYSTATE=true
-# unstaged (*) and staged (+) changes will be shown next to the branch name
-
-GIT_PS1_SHOWSTASHSTATE=true
-# If something is stashed, then a '$' will be shown next to the branch name.
-
-GIT_PS1_SHOWUNTRACKEDFILES=true
-# If there're untracked files, then a '%' will be shown next to the branch name.
-
-GIT_PS1_SHOWUPSTREAM="auto verbose"
-# see the difference between HEAD and its upstream. A "<" indicates you are
-# behind, ">" indicates you are ahead, "<>" indicates you have diverged and "="
-# indicates that there is no difference. Adding "verbose" shows number of
-# commits ahead/behind (+/-) upstream
-
-GIT_PS1_SHOWCONFLICTSTATE=yes
-# The prompt will include "|CONFLICT" when there are unresolved conflicts
-
-GIT_PS1_SHOWCOLORHINTS=true
-# colored hint about the current dirty state
-
-if [[ -f ~/.cloudinstance ]]; then
-  n=$(<~/.cloudinstance)
-  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+if command -v starship &> /dev/null ; then
+  eval "$(starship init bash)"
+  STARSHIP=true
 else
-  export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+  STARSHIP=false
+  if [[ -z $(type -t __git_ps1) ]]; then
+    source $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+  fi
+  # unstaged (*) and staged (+) changes will be shown next to the branch name
+  GIT_PS1_SHOWDIRTYSTATE=true
+  # If something is stashed, then a '$' will be shown next to the branch name.
+  GIT_PS1_SHOWSTASHSTATE=true
+  # If there're untracked files, then a '%' will be shown next to the branch name.
+  GIT_PS1_SHOWUNTRACKEDFILES=true
+  # see the difference between HEAD and its upstream. A "<" indicates you are
+  # behind, ">" indicates you are ahead, "<>" indicates you have diverged and "="
+  # indicates that there is no difference. Adding "verbose" shows number of
+  # commits ahead/behind (+/-) upstream
+  GIT_PS1_SHOWUPSTREAM="auto verbose"
+  # The prompt will include "|CONFLICT" when there are unresolved conflicts
+  GIT_PS1_SHOWCONFLICTSTATE=yes
+  # colored hint about the current dirty state
+  GIT_PS1_SHOWCOLORHINTS=true
 fi
+
+
+# implement ~/.cloundstance
+# if [[ -f ~/.cloudinstance ]]; then
+#   n=$(<~/.cloudinstance)
+#   export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+# else
+#   export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+# fi
 
 
 #-------------------------------------------------------------------------------

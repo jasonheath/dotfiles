@@ -38,6 +38,7 @@ fi
 #  export EDITOR='vim'
 #fi
 
+
 #-------------------------------------------------------------------------------
 # aliases 
 #-------------------------------------------------------------------------------
@@ -178,7 +179,7 @@ else
 fi
 
 
-# implement ~/.cloundstance
+# TODO: implement ~/.cloundstance
 # if [[ -f ~/.cloudinstance ]]; then
 #   n=$(<~/.cloudinstance)
 #   export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
@@ -223,12 +224,14 @@ if command -v rbenv &> /bin/null; then
   fi
 fi
 
+
 #-------------------------------------------------------------------------------
 # rust [https://www.rust-lang.org/]
 #-------------------------------------------------------------------------------
 if [[ -f $HOME/.cargo/env ]]; then
   . "$HOME/.cargo/env"
 fi
+
 
 #-------------------------------------------------------------------------------
 # direnv [https://direnv.net/]

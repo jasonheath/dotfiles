@@ -45,9 +45,10 @@ else
   alias la1='ls -1AFh --color=auto'
 fi
 
-# consider if you want to keep this or specify unstable in justfiles
+# TODO: consider if you want to keep this or specify unstable in justfiles
 alias just='just --unstable'
 
+# TODO: decide if you really to keep these around
 if [[ $OSTYPE =~ darwin.* ]]; then
   alias chrome='open -a /Applications/Google\ Chrome.app'
   alias firefox='open -a /Applications/Firefox.app'

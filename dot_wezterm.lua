@@ -60,6 +60,7 @@ config.mouse_bindings = {
 
 -- This is where you actually apply your config choices
 config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
+config.font = wezterm.font 'JetBrainsMono Nerd Font'
 config.font_size = 16.0
 config.enable_tab_bar = false
 

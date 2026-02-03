@@ -1,12 +1,15 @@
-shopt -s globstar
+#-------------------------------------------------------------------------------
+# ~/.bashrc
+#-------------------------------------------------------------------------------
+# (1) Defining Aliases and Functions: Setting up shortcuts and custom commands
+#     that are useful for interactive use but are not environment variables
+# (2) Customizing the Prompt: Modifying the appearance and information
+#     displayed in your shell prompt (e.g., PS1).
+# (3) Interactive Settings: Configuring features specific to interactive use,
+#     such as command-line completion settings
+#-------------------------------------------------------------------------------
 
-HISTCONTROL=ignoreboth
-# ignoreboth: shorthand for ‘ignorespace’ and ‘ignoredups
-# ignorespace: lines beginning with a space are not saved 
-# ignoredups: lines which match the previous history entry to not be saved
-HISTFILESIZE=2048 #~4x from a default of 500
-shopt -s histappend
-
+# TODO: What was I on about here?
 # If this needs to be guarded against non-interctive shells then that
 # feels like a sign I shouldn't source .bashrc from .bash_profile
 # as I've been thinking about
@@ -15,25 +18,6 @@ if [ -t 1 ]; then
   bind 'TAB:menu-complete'
   bind 'set print-completions-horizontally on'
 fi
-
-if command -v vim &> /dev/null ; then
-  export EDITOR=vim
-elif command -v vi &> /dev/null ; then
-  export EDITOR=vi
-fi
-
-# Preferred editor for local and remote sessions
-#if [[ -n $SSH_CONNECTION ]]; then
-#  export VISUAL='vim'
-#  export EDITOR='vim'
-#else
-#  if [[ $OSTYPE =~ darwin.* ]]; then
-#    export VISUAL='mvim -f'
-#  else
-#    export VISUAL='vim'
-#  fi
-#  export EDITOR='vim'
-#fi
 
 
 #-------------------------------------------------------------------------------
@@ -72,97 +56,7 @@ fi
 
 
 #-------------------------------------------------------------------------------
-# PATH management
-#-------------------------------------------------------------------------------
-x="~/.local/bin/"
-x+=":/bin:/sbin"
-x+=":/usr/bin:/usr/sbin"
-x+=":/usr/local/bin:/usr/local/sbin"
-if [[ $OSTYPE =~ darwin.* ]]; then
-  x+=":/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-  x+=":/Applications/MacVim.app/Contents/bin"
-fi
-if [[ -n $PATH ]]; then
-  x="$x:$PATH"
-fi
-export PATH=$x
-unset x
-
-# dedup PATH because of 'x="$x:$PATH"' above
-seen=()
-IFS=':'
-for value in ${PATH[@]}
-do
-  if ! [[ "${seen[@]}" =~ [[:space:]]"$value"[[:space:]] ]]; then
-    seen+=("$value")
-  fi
-done
-
-dedupped_path=''
-for value in "${seen[@]}"
-do
-  dedupped_path+=$value
-  dedupped_path+=':'
-done
-export PATH=${dedupped_path%?}
-unset seen
-unset dedupped_path
-IFS=' '
-
-if command -v manpath &> /dev/null; then 
-  # if manpath command exists use it to set, possibly overwriting, the MANPATH
-  export MANPATH=$(manpath) 
-elif [[ -z "$MANPATH" ]] ; then
-  # if the manpath command is not found and the MANPATH environment variables
-  # is unset then set MANPATH to a reasonable default value
-  export MANPATH="$XDG_DATA_HOME/man:/usr/share/man:/usr/local/share/man:/usr/man"
-fi
-# NOTE: MANPATH manipulations below assumes MANPATH is set and exported
-
-
-#-------------------------------------------------------------------------------
-# My cobbled keep it out of source control environment variable file
-#-------------------------------------------------------------------------------
-# ~/.secretish is a place to put envars that might not be "real secrets"
-# but are still probably best left out of source control repositories
-[[ -f ~/.secretish ]] && source ~/.secretish
-
-
-#-------------------------------------------------------------------------------
-# My cobbled .cloudinstance management
-# interacts with prompt so keep this above prompt management
-#-------------------------------------------------------------------------------
-if [[ -f .cloudinstance ]]; then
-  H=$(TZ="America/Kentucky/Louisville" date +%H)
-  when=$(date --date='TZ="America/Kentucky/Louisville" 00:00 today' --utc +"%H:%M")
-  if (( ${H#0} < 18 )); then
-    when=$(date --date='TZ="America/Kentucky/Louisville" 18:00 today' --utc +"%H:%M")
-  fi
-  TZ='Etc/UTC' sudo shutdown ${when} --no-wall
-fi
-
-
-#-------------------------------------------------------------------------------
-# brew [https://brew.sh/]
-#-------------------------------------------------------------------------------
-if [[ $OSTYPE =~ darwin.* ]] && [[ -d /opt/homebrew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
-elif [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew ]]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  HOMEBREW_PREFIX="$(brew --prefix)"
-else
-  echo "brew not configured"
-fi
-
-if [[ -n "$HOMEBREW_PREFIX" ]]; then
-  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-  MANPATH="$HOMEBREW_PREFIX/share/man:$MANPATH"
-fi 
-
-
-#-------------------------------------------------------------------------------
-# Starship (https://starship.rs/)
+# Starship [https://starship.rs/]
 # and PS1 fallback
 #-------------------------------------------------------------------------------
 if command -v starship &> /dev/null ; then
@@ -188,31 +82,33 @@ else
   GIT_PS1_SHOWCONFLICTSTATE=yes
   # colored hint about the current dirty state
   GIT_PS1_SHOWCOLORHINTS=true
+
+  if [[ -f ~/.cloudinstance ]]; then
+    n=$(<~/.cloudinstance)
+    export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+  else
+    export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
+  fi
 fi
 
 
-# TODO: implement ~/.cloundstance
-# if [[ -f ~/.cloudinstance ]]; then
-#   n=$(<~/.cloudinstance)
-#   export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m$n\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
-# else
-#   export PS1='[\e[94m\u\e[0m\e[34m@\e[0m\e[94m\h\e[0m | \e[95m\w\e[0m$(__git_ps1 " | %s")]\n$ '
-# fi
-
-
 #-------------------------------------------------------------------------------
-# AWS [https://aws.amazon.com/]
+# brew [https://brew.sh/]
 #-------------------------------------------------------------------------------
-# https://docs.aws.amazon.com/sdkref/latest/guide/feature-smart-config-defaults.html
-export AWS_DEFAULTS_MODE="standard"
-# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html#cli-usage-pagination-clientside
-#export AWS_PAGER=bat
-#export AWS_PAGER="less --use-color"
-#export AWS_PAGER=''
-# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html
-export AWS_DEFAULT_OUTPUT=json
-# https://docs.aws.amazon.com/sdkref/latest/guide/feature-region.html
-export AWS_REGION=us-east-2
+if [[ $OSTYPE =~ darwin.* ]] && [[ -d /opt/homebrew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  HOMEBREW_PREFIX="$(brew --prefix)"
+elif [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  HOMEBREW_PREFIX="$(brew --prefix)"
+else
+  echo "brew not configured"
+fi
+
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+  [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]] && . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
+  MANPATH="$HOMEBREW_PREFIX/share/man:$MANPATH"
+fi 
 
 
 #-------------------------------------------------------------------------------
@@ -227,19 +123,10 @@ fi
 #export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
 #export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
 
-#-------------------------------------------------------------------------------
-# zoxide [https://github.com/ajeetdsouza/zoxide] 
-#-------------------------------------------------------------------------------
-if command -v zoxide &> /dev/null; then
-  eval "$(zoxide init bash)"
-else
-  echo "zoxide binary not found"
-fi
-
 
 #-------------------------------------------------------------------------------
-# ruby  [https://www.ruby-lang.org/]
 # rbenv [https://rbenv.org/]
+# ruby  [https://www.ruby-lang.org/]
 #-------------------------------------------------------------------------------
 if command -v rbenv &> /dev/null; then
   eval "$(rbenv init - --no-rehash bash)"
@@ -256,6 +143,16 @@ if [[ -f $HOME/.cargo/env ]]; then
   . "$HOME/.cargo/env"
 else
   echo "cargo not configured"
+fi
+
+
+#-------------------------------------------------------------------------------
+# zoxide [https://github.com/ajeetdsouza/zoxide] 
+#-------------------------------------------------------------------------------
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init bash)"
+else
+  echo "zoxide binary not found"
 fi
 
 

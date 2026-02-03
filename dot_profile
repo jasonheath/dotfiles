@@ -1,12 +1,20 @@
-export LC_ALL='en_US.UTF-8'
-export LANG='en_US.UTF-8'
-export LANGUAGE='en'
+#-------------------------------------------------------------------------------
+# ~/.profile
+#-------------------------------------------------------------------------------
+# (1) Everything must be compatible with any /bin/sh (bash, dash, ksh, etc.)
+# (2) While ~/.profile can be loaded by Bash under the right circumstances my
+#     intention is for my .profile to contain "minimal and clean" configuration
+#     for non-Bash bourne shells such as dash
+# (3) Because of (2), this ~/.profile is not sourced from .bash_profile 
+#-------------------------------------------------------------------------------
 
+# Just because this is the time zone I'm probably going to be thinking in
 export TZ='America/Kentucky/Louisville'
 
+# Doesn't have to be completely Spartan, just minimal and well considered
 export PAGER=less
 export LESS='-SRXF'
-if command -v bat &> /dev/null; then 
-  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-fi
+
+# TEMPTATIONS
+# Setting LC_ALL=C
 

@@ -1,13 +1,160 @@
-# Load login settings and environment variables
-if [[ -f $HOME/.profile ]]; then
-  source "$HOME/.profile"
+#-------------------------------------------------------------------------------
+# ~/.bash_profile
+#-------------------------------------------------------------------------------
+# (1) Setting Environment Variables: Defining system-wide environment variables
+#     like PATH, EDITOR, or similar which need to be set once and inherited by
+#     all subsequent processes, including GUI applications and non-login shells
+# (2) Running Login-Specific Commands: Executing commands that should only run
+#     when a user logs in, such as displaying the message of the day (MOTD)
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Bash centric conig
+#-------------------------------------------------------------------------------
+
+shopt -s globstar
+
+export HISTCONTROL=ignoreboth
+# ignoreboth: shorthand for ‘ignorespace’ and ‘ignoredups
+# ignorespace: lines beginning with a space are not saved 
+# ignoredups: lines which match the previous history entry to not be saved
+export HISTFILESIZE=2048 #~4x from a default of 500
+shopt -s histappend
+
+
+#-------------------------------------------------------------------------------
+# More unix-y, posix, GNU, "standardish" type stuff
+#-------------------------------------------------------------------------------
+
+export LC_ALL='en_US.UTF-8'
+export LANG='en_US.UTF-8'
+export LANGUAGE='en'
+
+export TZ='America/Kentucky/Louisville'
+
+export PAGER=less
+export LESS='-SRXF'
+
+if command -v vim &> /dev/null ; then
+  export EDITOR=vim
+elif command -v vi &> /dev/null ; then
+  export EDITOR=vi
 fi
 
+# Preferred editor for local and remote sessions
+#if [[ -n $SSH_CONNECTION ]]; then
+#  export VISUAL='vim'
+#  export EDITOR='vim'
+#else
+#  if [[ $OSTYPE =~ darwin.* ]]; then
+#    export VISUAL='mvim -f'
+#  else
+#    export VISUAL='vim'
+#  fi
+#  export EDITOR='vim'
+#fi
+
+
+#-------------------------------------------------------------------------------
+# XDG_* config.  These don't really need to be set but I'm explicitly setting
+# them because on occasion I've felt, IMHO, that an app might have misbehaved
+# in their absence
+#-------------------------------------------------------------------------------
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_STATE_HOME="$HOME/.local/state"
 
-# Load interactive settings
+
+#-------------------------------------------------------------------------------
+# PATH management
+#-------------------------------------------------------------------------------
+x="~/.local/bin/"
+x+=":/bin:/sbin"
+x+=":/usr/bin:/usr/sbin"
+x+=":/usr/local/bin:/usr/local/sbin"
+if [[ $OSTYPE =~ darwin.* ]]; then
+  x+=":/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+  x+=":/Applications/MacVim.app/Contents/bin"
+fi
+if [[ -n $PATH ]]; then
+  x="$x:$PATH"
+fi
+export PATH=$x
+unset x
+
+# dedup PATH because of 'x="$x:$PATH"' above
+seen=()
+IFS=':'
+for value in ${PATH[@]}
+do
+  if ! [[ "${seen[@]}" =~ [[:space:]]"$value"[[:space:]] ]]; then
+    seen+=("$value")
+  fi
+done
+
+dedupped_path=''
+for value in "${seen[@]}"
+do
+  dedupped_path+=$value
+  dedupped_path+=':'
+done
+export PATH=${dedupped_path%?}
+unset seen
+unset dedupped_path
+IFS=' '
+
+
+#-------------------------------------------------------------------------------
+# MANPATH
+#-------------------------------------------------------------------------------
+
+if command -v manpath &> /dev/null; then 
+  # if manpath command exists use it to set, possibly overwriting, the MANPATH
+  export MANPATH=$(manpath) 
+elif [[ -z "$MANPATH" ]] ; then
+  # if the manpath command is not found and the MANPATH environment variables
+  # is unset then set MANPATH to a reasonable default value
+  export MANPATH="$XDG_DATA_HOME/man:/usr/share/man:/usr/local/share/man:/usr/man"
+fi
+# NOTE: MANPATH manipulations below assumes MANPATH is set and exported
+
+if command -v bat &> /dev/null; then 
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
+
+
+#-------------------------------------------------------------------------------
+# My cobbled .cloudinstance management
+# interacts with prompt so keep this above prompt management
+#-------------------------------------------------------------------------------
+# if [[ -f .cloudinstance ]]; then
+#   H=$(TZ="America/Kentucky/Louisville" date +%H)
+#   when=$(date --date='TZ="America/Kentucky/Louisville" 00:00 today' --utc +"%H:%M")
+#   if (( ${H#0} < 18 )); then
+#     when=$(date --date='TZ="America/Kentucky/Louisville" 18:00 today' --utc +"%H:%M")
+#   fi
+#   TZ='Etc/UTC' sudo shutdown ${when} --no-wall
+# fi
+
+
+#-------------------------------------------------------------------------------
+# AWS [https://aws.amazon.com/]
+#-------------------------------------------------------------------------------
+# https://docs.aws.amazon.com/sdkref/latest/guide/feature-smart-config-defaults.html
+export AWS_DEFAULTS_MODE="standard"
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-pagination.html#cli-usage-pagination-clientside
+#export AWS_PAGER=bat
+#export AWS_PAGER="less --use-color"
+#export AWS_PAGER=''
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html
+export AWS_DEFAULT_OUTPUT=json
+# https://docs.aws.amazon.com/sdkref/latest/guide/feature-region.html
+export AWS_REGION=us-east-2
+
+
+#-------------------------------------------------------------------------------
+# load ~/.bashrc
+#-------------------------------------------------------------------------------
 if [[ -f $HOME/.bashrc ]]; then
   source "$HOME/.bashrc"
 fi

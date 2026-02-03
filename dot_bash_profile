@@ -3,6 +3,9 @@ if [[ -f $HOME/.profile ]]; then
   source "$HOME/.profile"
 fi
 
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_STATE_HOME="$HOME/.local/state"
 
 # Load interactive settings
 if [[ -f $HOME/.bashrc ]]; then

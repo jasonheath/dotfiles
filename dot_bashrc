@@ -102,7 +102,7 @@ elif [[ $OSTYPE =~ linux.* ]] && [[ -d /home/linuxbrew/.linuxbrew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
   HOMEBREW_PREFIX="$(brew --prefix)"
 else
-  echo "brew not configured"
+  echo "BASHRC: brew not configured"
 fi
 
 if [[ -n "$HOMEBREW_PREFIX" ]]; then
@@ -118,7 +118,7 @@ if command -v fzf &> /dev/null; then
   # Set up fzf key bindings and fuzzy completion
   eval "$(fzf --bash)"
 else
-  echo "fzf binary not found"
+  echo "BASHRC: fzf binary not found"
 fi
 #export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}' --color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
 #export FZF_DEFAULT_OPTS="--preview 'bat -n --color=always {}'"
@@ -132,7 +132,7 @@ if command -v rbenv &> /dev/null; then
   eval "$(rbenv init - --no-rehash bash)"
   MANPATH="$(rbenv prefix)/share/man:$MANPATH"
 else
-  echo "rbenv binary not found"
+  echo "BASHRC: rbenv binary not found"
 fi
 
 
@@ -142,7 +142,7 @@ fi
 if [[ -f $HOME/.cargo/env ]]; then
   . "$HOME/.cargo/env"
 else
-  echo "cargo not configured"
+  echo "BASHRC: cargo not configured"
 fi
 
 
@@ -152,7 +152,7 @@ fi
 if command -v zoxide &> /dev/null; then
   eval "$(zoxide init bash)"
 else
-  echo "zoxide binary not found"
+  echo "BASHRC: zoxide binary not found"
 fi
 
 
@@ -164,6 +164,6 @@ fi
 if command -v direnv &> /dev/null; then
   eval "$(direnv hook bash)"
 else
-  echo "direnv not found"
+  echo "BASHRC: direnv not found"
 fi
 

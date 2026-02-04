@@ -1,69 +1,62 @@
-" actually run by default so could elide
-" However, keep as the first line because VIVE LA VIM!
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" MANDATORY SETTINGS are for my sanity
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"set autoindent
-set autowrite
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" OPTIONS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set autoread
+set autowrite
 set nobackup
-set nowrap
-set nowrapscan
-set number
-"set relativenumber
-set ruler
-set expandtab " has my attitude about tabs actually changed?
-set smarttab
-set shiftwidth=2
-set tabstop=2
-set smartindent
-set visualbell
-
-set encoding=utf8
-set ffs=unix,dos,mac
-
-"" https://dev.to/cbartlett/word-wrapping-in-vim-4oog
-"set wrap
-"set linebreak
-"set nolist
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" CREATURE FEATURES make life good
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set confirm
-set mousehide
-set ignorecase
-set smartcase
+set encoding=utf8
+set expandtab 
+set ffs=unix,dos,mac
+" my preference if installed and then reasonable defaults for macOS, Linux, and Windows
+set guifont=JetBrainsMonoNLNFP-Regular:h18,Monaco:h18,Ubuntu\ Mono\ 18,Consolas:h18:cANSI
 set hlsearch
+set ignorecase
 set incsearch
-set magic
 set lazyredraw
-set showmatch
+set listchars=eol:%,tab:<->,space:.,multispace:...+,nbsp:_
+set magic
+set mousehide
+set number
 set report=0
+set ruler
+set shiftwidth=2
+set showmatch
+set smartcase
+set smartindent
+set smarttab
 set splitbelow
 set splitright
+set tabstop=2
+set termguicolors
+set visualbell
 set warn
-set suffixes='.bak,~,.o,.info,.swp,.obj'
-             ".bak,~,.o,.h,.info,.swp,.obj <-- default
-set listchars=eol:%,tab:<->,space:.,multispace:...+,nbsp:_
+set nowrap
+set nowrapscan
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" AUTOCOMMANDS 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AUTOCOMMANDS 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd FocusLost * nested silent! :wa
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-""   FILETYPE SETTINGS
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" FILETYPE SETTINGS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax enable
 filetype plugin on
 filetype indent on 
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ABBREVIATIONS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 iab zhd #-------------------------------------------------------------------------------<cr>#<cr>#-------------------------------------------------------------------------------<cr><Esc>kka
 
-set guifont=InputMono-Regular:h18
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-plug [https://github.com/junegunn/vim-plug]
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
@@ -83,14 +76,14 @@ endif
 " - Automatically executes `filetype plugin indent on` and `syntax enable`.
 " Make sure you use single quotes
 call plug#begin()
-  Plug 'NoahTheDuke/vim-just'
-  Plug 'rust-lang/rust.vim'
-  "Plug 'chrisbra/Colorizer'
-  "Plug 'vim-airline/vim-airline'
-  "Plug 'vim-airline/vim-airline-themes'
   "Plug 'altercation/vim-colors-solarized'
   Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+  "Plug 'chrisbra/Colorizer'
   "Plug 'dracula/vim', { 'as': 'dracula' }
+  Plug 'NoahTheDuke/vim-just'
+  Plug 'rust-lang/rust.vim'
+  "Plug 'vim-airline/vim-airline-themes'
+  "Plug 'vim-airline/vim-airline'
   if has('osxdarwin')
     Plug 'vimpostor/vim-lumen'
   elseif has('linux')
@@ -98,9 +91,13 @@ call plug#begin()
   end
 call plug#end()
 
-let macvim_skip_colorscheme=1
 
-set termguicolors
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" colorscheme settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Helps MacVim respect the colorscheme settings
+let macvim_skip_colorscheme=1
 
 if has('osxdarwin')
   au User LumenLight colorscheme catppuccin_latte
@@ -109,5 +106,4 @@ elseif has('linux')
   let g:colors_name = 'catppuccin_mocha'
   execute "colorscheme " . g:colors_name
 endif
-
 

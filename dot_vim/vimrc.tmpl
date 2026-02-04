@@ -85,32 +85,29 @@ endif
 call plug#begin()
   Plug 'NoahTheDuke/vim-just'
   Plug 'rust-lang/rust.vim'
-  Plug 'chrisbra/Colorizer'
+  "Plug 'chrisbra/Colorizer'
   "Plug 'vim-airline/vim-airline'
   "Plug 'vim-airline/vim-airline-themes'
   "Plug 'altercation/vim-colors-solarized'
   Plug 'catppuccin/vim', { 'as': 'catppuccin' }
   "Plug 'dracula/vim', { 'as': 'dracula' }
-{{- if eq .chezmoi.os "darwin" }}
-  Plug 'vimpostor/vim-lumen'
-{{- else if eq .chezmoi.os "linux" }}
-{{- end }}
+  if has('osxdarwin')
+    Plug 'vimpostor/vim-lumen'
+  elseif has('linux')
+    " no linux specific plugs at this time
+  end
 call plug#end()
 
 let macvim_skip_colorscheme=1
 
 set termguicolors
-{{- if eq .chezmoi.os "darwin" }}
+
 if has('osxdarwin')
   au User LumenLight colorscheme catppuccin_latte
   au User LumenDark colorscheme catppuccin_mocha
-endif
-{{- else if eq .chezmoi.os "linux" }}
-if filereadable(glob('~/.colorscheme'))
-  let g:colors_name = readfile(glob('~/.colorscheme'))[0]
-else
+elseif has('linux')
   let g:colors_name = 'catppuccin_mocha'
+  execute "colorscheme " . g:colors_name
 endif
-execute "colorscheme " . g:colors_name
-{{- end }}
+
 

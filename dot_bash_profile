@@ -8,19 +8,6 @@
 #     when a user logs in, such as displaying the message of the day (MOTD)
 #-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
-# Bash centric conig
-#-------------------------------------------------------------------------------
-
-shopt -s globstar
-
-export HISTCONTROL=ignoreboth
-# ignoreboth: shorthand for ‘ignorespace’ and ‘ignoredups
-# ignorespace: lines beginning with a space are not saved 
-# ignoredups: lines which match the previous history entry to not be saved
-export HISTFILESIZE=2048 #~4x from a default of 500
-shopt -s histappend
-
 
 #-------------------------------------------------------------------------------
 # More unix-y, posix, GNU, "standardish" type stuff
@@ -56,9 +43,11 @@ fi
 
 
 #-------------------------------------------------------------------------------
-# XDG_* config.  These don't really need to be set but I'm explicitly setting
-# them because on occasion I've felt, IMHO, that an app might have misbehaved
-# in their absence
+# XDG_* environment variables. Arguably these don'really need to be set but I'm
+# explicitly setting them because on occasion I've felt, IMHO, that different
+# apps have misbehaved in their absence.  My experience seems to be that newer
+# apps that say they support these do well and that older apps that have
+# adopted them on have varying results.
 #-------------------------------------------------------------------------------
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CONFIG_HOME="$HOME/.config"
